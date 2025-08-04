@@ -6,9 +6,10 @@ import (
 	"net/http"
 )
 
-// GetPreferencesPage retrieves all CDN configurations for the authenticated account
-func (c *Client) GetPreferencesPage(ctx context.Context) ([]PreferencePage, error) {
-	resp, err := c.makeRequest(ctx, http.MethodGet, "/preference", nil)
+// GetPreferencesPage retrieves CDN configurations for the authenticated account with pagination
+func (c *Client) GetPreferencesPage(ctx context.Context, pageNumber, pageSize int) ([]PreferencePage, error) {
+	path := fmt.Sprintf("/preference?page=%d&size=%d", pageNumber, pageSize)
+	resp, err := c.makeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
 		return nil, err
 	}
