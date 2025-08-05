@@ -1,4 +1,4 @@
-package preferenceclient
+package httpclient
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// Client represents the CDN Preference API client
+// Client represents the agnostic http client
 type Client struct {
 	baseURL    string
 	apiKey     string
@@ -24,8 +24,13 @@ type Client struct {
 // ClientOption allows for customization of the client
 type ClientOption func(*Client)
 
-// NewClient creates a new CDN Preference API client
-func NewClient(baseURL, apiKey, apiSecret string, options ...ClientOption) *Client {
+// New creates a new agnostic HTTP client with the provided base URL, API key, and API secret.
+// It accepts optional ClientOption functions to customize the client further.
+// The base URL should be the root endpoint of the API, e.g., "https://api.example.com/v1".
+// The API key and secret are used for authentication in requests.
+// The client uses the default HTTP client from the net/http package, which can be customized with options.
+// The client is designed to be used for making authenticated requests to an API that requires HMAC authentication.
+func New(baseURL, apiKey, apiSecret string, options ...ClientOption) *Client {
 	client := &Client{
 		baseURL:    baseURL,
 		apiKey:     apiKey,
@@ -55,8 +60,8 @@ func computeHMAC(secretKey, timestamp string) string {
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
 
-// makeRequest is the core function to make HTTP requests.
-func (c *Client) makeRequest(ctx context.Context, method, path string, body any) (*http.Response, error) {
+// MakeRequest is the core function to make HTTP requests.
+func (c *Client) MakeRequest(ctx context.Context, method, path string, body any) (*http.Response, error) {
 	url := fmt.Sprintf("%s%s", c.baseURL, path)
 
 	var bodyReader io.Reader
@@ -87,32 +92,4 @@ func (c *Client) makeRequest(ctx context.Context, method, path string, body any)
 		return nil, fmt.Errorf("error executing request: %w", err)
 	}
 	return resp, nil
-}
-
-// parseResponse handles deserializing the response body
-func parseResponse(resp *http.Response, v any) error {
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Printf("error closing response body: %v\n", err)
-		}
-	}(resp.Body)
-
-	if resp.StatusCode >= 400 {
-		bodyBytes, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return fmt.Errorf("error reading error response body: %w", err)
-		}
-		return fmt.Errorf("API error: status code %d, body: %s", resp.StatusCode, string(bodyBytes))
-	}
-
-	if v == nil {
-		return nil
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(v); err != nil {
-		return fmt.Errorf("error decoding response body: %w", err)
-	}
-
-	return nil
 }

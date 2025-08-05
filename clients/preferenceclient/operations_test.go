@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+
+	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
 )
 
 func TestGetPreferencesPage(t *testing.T) {
@@ -105,7 +107,7 @@ func TestGetPreferencesPage(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -221,7 +223,7 @@ func TestCreatePreference(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -235,6 +237,10 @@ func TestCreatePreference(t *testing.T) {
 			}
 		})
 	}
+}
+
+func givenPreferenceClient(serverURL string) *Client {
+	return New(httpclient.New(serverURL, "test-key", "test-secret"))
 }
 
 func TestGetPreference(t *testing.T) {
@@ -313,7 +319,7 @@ func TestGetPreference(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -411,7 +417,7 @@ func TestUpdatePreference(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -468,7 +474,7 @@ func TestDeletePreference(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -541,7 +547,7 @@ func TestGetAvailabilityThresholds(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -641,7 +647,7 @@ func TestGetPerformanceFiltering(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()
@@ -736,7 +742,7 @@ func TestGetEnabledSubdivisionCountries(t *testing.T) {
 			defer server.Close()
 
 			// Create client pointing to test server
-			client := NewClient(server.URL, "test-key", "test-secret")
+			client := givenPreferenceClient(server.URL)
 
 			// Call the method
 			ctx := context.Background()

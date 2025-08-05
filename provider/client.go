@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
 	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
 )
 
@@ -11,7 +12,8 @@ type APIClient struct {
 
 // NewAPIClient creates a new API client for the provider
 func NewAPIClient(baseURL, apiKey, apiSecret string) *APIClient {
+	httpClient := httpclient.New(baseURL, apiKey, apiSecret)
 	return &APIClient{
-		preference: preferenceclient.NewClient(baseURL, apiKey, apiSecret),
+		preference: preferenceclient.New(httpClient),
 	}
 }
