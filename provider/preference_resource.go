@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
@@ -113,9 +112,6 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"version": schema.StringAttribute{
 				Description: "Version of the CDN preference configuration",
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"last_updated": schema.StringAttribute{
 				Description: "Timestamp of when the configuration was last updated",

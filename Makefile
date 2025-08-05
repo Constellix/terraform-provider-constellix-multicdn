@@ -21,7 +21,7 @@ test:
 
 .PHONY: testacc
 testacc:
-	TF_ACC=1 go test -v ./... -timeout 120m
+	TF_ACC=1 go test -v ./provider/... -timeout 120m
 
 .PHONY: clean
 clean:
