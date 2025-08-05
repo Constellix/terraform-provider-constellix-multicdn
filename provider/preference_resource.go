@@ -224,7 +224,7 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 }
 
 // Configure configures the resource with the provider client
-func (r *preferenceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *preferenceResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -252,7 +252,7 @@ func (r *preferenceResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	// Convert Terraform model to API model
-	apiPreference := r.convertToAPIModel(ctx, &plan)
+	apiPreference := r.convertToAPIModel(&plan)
 
 	// Call the API client to create the preference
 	err := r.client.preference.CreatePreference(ctx, apiPreference)
@@ -275,7 +275,7 @@ func (r *preferenceResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	// Convert API model back to Terraform model
-	r.convertFromAPIModel(ctx, apiPreference, &plan)
+	r.convertFromAPIModel(apiPreference, &plan)
 
 	// Save the data into Terraform state
 	diags = resp.State.Set(ctx, plan)
@@ -306,7 +306,7 @@ func (r *preferenceResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	// Convert API model to Terraform model
-	r.convertFromAPIModel(ctx, preference, &state)
+	r.convertFromAPIModel(preference, &state)
 
 	// Save the updated data into Terraform state
 	diags = resp.State.Set(ctx, state)
@@ -327,7 +327,7 @@ func (r *preferenceResource) Update(ctx context.Context, req resource.UpdateRequ
 	resourceID := int(plan.ResourceID.ValueInt64())
 
 	// Convert Terraform model to API model
-	apiPreference := r.convertToAPIModel(ctx, &plan)
+	apiPreference := r.convertToAPIModel(&plan)
 
 	// Call the API client to update the preference
 	err := r.client.preference.UpdatePreference(ctx, resourceID, apiPreference)
@@ -350,7 +350,7 @@ func (r *preferenceResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	// Convert API model back to Terraform model
-	r.convertFromAPIModel(ctx, apiPreference, &plan)
+	r.convertFromAPIModel(apiPreference, &plan)
 
 	// Save the updated data into Terraform state
 	diags = resp.State.Set(ctx, plan)
@@ -398,7 +398,7 @@ func (r *preferenceResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 // Helper functions to convert between Terraform and API models
-func (r *preferenceResource) convertToAPIModel(ctx context.Context, tfModel *preferenceResourceModel) *preferenceclient.Preference {
+func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel) *preferenceclient.Preference {
 	apiModel := &preferenceclient.Preference{
 		ResourceID: int(tfModel.ResourceID.ValueInt64()),
 	}
@@ -517,7 +517,7 @@ func (r *preferenceResource) convertToAPIModel(ctx context.Context, tfModel *pre
 	return apiModel
 }
 
-func (r *preferenceResource) convertFromAPIModel(ctx context.Context, apiModel *preferenceclient.Preference, tfModel *preferenceResourceModel) {
+func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Preference, tfModel *preferenceResourceModel) {
 	tfModel.ResourceID = types.Int64Value(int64(apiModel.ResourceID))
 	tfModel.ContentType = types.StringValue(apiModel.ContentType)
 	tfModel.Description = types.StringValue(apiModel.Description)

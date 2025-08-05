@@ -20,9 +20,9 @@ import (
 //go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
 var (
-	// these will be set by the goreleaser configuration
-	// to appropriate values for the compiled binary.
-	version string = "dev"
+// these will be set by the goreleaser configuration
+// to appropriate values for the compiled binary.
+// version string = "dev"
 )
 
 func main() {
