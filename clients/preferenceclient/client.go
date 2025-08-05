@@ -13,38 +13,16 @@ import (
 	"time"
 )
 
-const (
-	defaultRetryCount   = 3
-	defaultRetryBackoff = 500 * time.Millisecond
-)
-
 // Client represents the CDN Preference API client
 type Client struct {
 	baseURL    string
 	apiKey     string
 	apiSecret  string
 	httpClient *http.Client
-	retryCount int
-	retryDelay time.Duration
 }
 
 // ClientOption allows for customization of the client
 type ClientOption func(*Client)
-
-// WithHTTPClient sets a custom HTTP client
-func WithHTTPClient(httpClient *http.Client) ClientOption {
-	return func(c *Client) {
-		c.httpClient = httpClient
-	}
-}
-
-// WithRetryPolicy customizes the retry policy
-func WithRetryPolicy(count int, delay time.Duration) ClientOption {
-	return func(c *Client) {
-		c.retryCount = count
-		c.retryDelay = delay
-	}
-}
 
 // NewClient creates a new CDN Preference API client
 func NewClient(baseURL, apiKey, apiSecret string, options ...ClientOption) *Client {
@@ -53,8 +31,6 @@ func NewClient(baseURL, apiKey, apiSecret string, options ...ClientOption) *Clie
 		apiKey:     apiKey,
 		apiSecret:  apiSecret,
 		httpClient: http.DefaultClient,
-		retryCount: defaultRetryCount,
-		retryDelay: defaultRetryBackoff,
 	}
 
 	// Apply options
@@ -79,8 +55,8 @@ func computeHMAC(secretKey, timestamp string) string {
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
 
-// makeRequest is the core function to make HTTP requests with retry logic
-func (c *Client) makeRequest(ctx context.Context, method, path string, body interface{}) (*http.Response, error) {
+// makeRequest is the core function to make HTTP requests.
+func (c *Client) makeRequest(ctx context.Context, method, path string, body any) (*http.Response, error) {
 	url := fmt.Sprintf("%s%s", c.baseURL, path)
 
 	var bodyReader io.Reader
@@ -104,48 +80,17 @@ func (c *Client) makeRequest(ctx context.Context, method, path string, body inte
 	if err != nil {
 		return nil, fmt.Errorf("error generating auth token: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("x-cns-security-token", token)
 
-	// Implement retry logic
-	var resp *http.Response
-	var lastErr error
-
-	for attempt := 0; attempt <= c.retryCount; attempt++ {
-		if attempt > 0 {
-			select {
-			case <-ctx.Done():
-				return nil, ctx.Err()
-			case <-time.After(c.retryDelay * time.Duration(attempt)):
-				// Exponential backoff
-			}
-		}
-
-		resp, lastErr = c.httpClient.Do(req)
-		if lastErr != nil {
-			continue
-		}
-
-		// Retry on rate limiting (429) errors
-		if resp.StatusCode != http.StatusTooManyRequests {
-			return resp, nil
-		}
-
-		// Close response body on retry
-		err := resp.Body.Close()
-		if err != nil {
-			return nil, err
-		}
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error executing request: %w", err)
 	}
-
-	if lastErr != nil {
-		return nil, fmt.Errorf("request failed after %d attempts: %w", c.retryCount+1, lastErr)
-	}
-
-	return resp, fmt.Errorf("request failed after %d attempts with status code: %d", c.retryCount+1, resp.StatusCode)
+	return resp, nil
 }
 
 // parseResponse handles deserializing the response body
-func parseResponse(resp *http.Response, v interface{}) error {
+func parseResponse(resp *http.Response, v any) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
