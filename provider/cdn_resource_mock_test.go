@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/constellix/terraform-provider-multicdn/clients/cdnclient"
 	"github.com/constellix/terraform-provider-multicdn/provider"
@@ -84,8 +83,6 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 			}
 
 			// Create a new configuration response
-			now := time.Now()
-			version := "v1.0"
 			id := "12345-abcde-67890"
 			accountId := 1001
 
@@ -95,8 +92,8 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				ResourceID:          newConfig.ResourceID,
 				ContentType:         newConfig.ContentType,
 				Description:         newConfig.Description,
-				Version:             &version,
-				LastUpdated:         &now,
+				Version:             newConfig.Version,
+				LastUpdated:         newConfig.LastUpdated,
 				Cdns:                newConfig.Cdns,
 				CdnEnablementMap:    newConfig.CdnEnablementMap,
 				TrafficDistribution: newConfig.TrafficDistribution,
@@ -158,10 +155,6 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			// Update the configuration
-			now := time.Now()
-			version := "v1.1"
-
 			// Get existing values
 			id := mockCdnConfigs[resourceID].ID
 			accountId := mockCdnConfigs[resourceID].AccountID
@@ -172,8 +165,8 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				ResourceID:          resourceID,
 				ContentType:         updateConfig.ContentType,
 				Description:         updateConfig.Description,
-				Version:             &version,
-				LastUpdated:         &now,
+				Version:             updateConfig.Version,
+				LastUpdated:         updateConfig.LastUpdated,
 				Cdns:                updateConfig.Cdns,
 				CdnEnablementMap:    updateConfig.CdnEnablementMap,
 				TrafficDistribution: updateConfig.TrafficDistribution,

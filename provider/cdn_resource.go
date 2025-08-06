@@ -146,11 +146,11 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 			},
 			"version": schema.StringAttribute{
 				Description: "Version of the CDN configuration",
-				Computed:    true,
+				Optional:    true,
 			},
 			"last_updated": schema.StringAttribute{
 				Description: "Timestamp of when the configuration was last updated",
-				Computed:    true,
+				Optional:    true,
 			},
 			"cdns": schema.ListNestedAttribute{
 				Description: "List of CDN provider entries",
@@ -575,6 +575,18 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 	if !tfModel.Description.IsNull() && tfModel.Description.ValueString() != "" {
 		description := tfModel.Description.ValueString()
 		apiModel.Description = &description
+	}
+
+	if !tfModel.Version.IsNull() && tfModel.Version.ValueString() != "" {
+		version := tfModel.Version.ValueString()
+		apiModel.Version = &version
+	}
+
+	if !tfModel.LastUpdated.IsNull() && tfModel.LastUpdated.ValueString() != "" {
+		parsedTime, err := time.Parse(time.RFC3339, tfModel.LastUpdated.ValueString())
+		if err == nil {
+			apiModel.LastUpdated = &parsedTime
+		}
 	}
 
 	// Convert CDN entries

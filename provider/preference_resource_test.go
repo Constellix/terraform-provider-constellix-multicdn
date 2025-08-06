@@ -46,8 +46,8 @@ func TestAccPreferenceResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_preference.test", "resource_id", "12345"),
 					resource.TestCheckResourceAttr("multicdn_preference.test", "content_type", "application/json"),
 					resource.TestCheckResourceAttr("multicdn_preference.test", "description", "Test Description"),
-					resource.TestCheckResourceAttrSet("multicdn_preference.test", "version"),
-					resource.TestCheckResourceAttrSet("multicdn_preference.test", "last_updated"),
+					resource.TestCheckNoResourceAttr("multicdn_preference.test", "version"),
+					resource.TestCheckNoResourceAttr("multicdn_preference.test", "last_updated"),
 					// Check that the preference exists in our mock store
 					testAccCheckPreferenceExists(12345, mockPreferences),
 				),
@@ -152,14 +152,16 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "resource_id", "54321"),
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "content_type", "application/json"),
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "description", "Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "version", "1.0"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "last_updated", "2025-08-01T00:00:00Z"),
 					// Check availability thresholds - Using the exact string representation without trailing zeros
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "95.5"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "98.5"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.default", "97.5"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.US", "99.9"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.CA", "99"), // Removed .0
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.DE", "98"), // Removed .0
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.FR", "97"), // Removed .0
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "95"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "98"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.default", "97"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.US", "99"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.CA", "99"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.DE", "98"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.FR", "97"),
 					// Check performance filtering
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.mode", "relative"),
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.relative_threshold", "0.25"),
@@ -178,9 +180,11 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckPreferenceExists(54321, mockPreferences),
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "description", "Updated Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "version", "1.1"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "last_updated", "2025-08-02T00:00:00Z"),
 					// Check updated availability thresholds
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "96.5"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "99"), // Removed .0
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "96"),
+					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "99"),
 					// Check updated performance filtering
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.relative_threshold", "0.3"),
 					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.EU.mode", "relative"),
@@ -447,34 +451,36 @@ resource "multicdn_preference" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
+  version = "1.0"
+  last_updated = "2025-08-01T00:00:00Z"
   
   // Comprehensive availability thresholds with multiple continents and countries
   availability_thresholds = {
-    world = 95.5
+    world = 95
     
     continents = {
       "NA" = {
-        default = 98.5
+        default = 98
         countries = {
-          "US" = 99.9
-          "CA" = 99.0
-          "MX" = 98.0
+          "US" = 99
+          "CA" = 99
+          "MX" = 98
         }
       }
       "EU" = {
-        default = 97.5
+        default = 97
         countries = {
-          "DE" = 98.0
-          "FR" = 97.0
-          "UK" = 96.5
-          "IT" = 96.0
+          "DE" = 98
+          "FR" = 97
+          "UK" = 96
+          "IT" = 96
         }
       }
       "AS" = {
-        default = 96.0
+        default = 96
         countries = {
-          "JP" = 97.5
-          "CN" = 96.0
+          "JP" = 97
+          "CN" = 96
         }
       }
     }
@@ -564,35 +570,37 @@ resource "multicdn_preference" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
+  version = "1.1"
+  last_updated = "2025-08-02T00:00:00Z"
   
   // Updated availability thresholds
   availability_thresholds = {
-    world = 96.5  // Changed from 95.5
+    world = 96  // Changed from 95
     
     continents = {
       "NA" = {
-        default = 99.0  // Changed from 98.5
+        default = 99  // Changed from 98
         countries = {
-          "US" = 99.9
-          "CA" = 99.5  // Changed from 99.0
-          "MX" = 98.5  // Changed from 98.0
+          "US" = 99
+          "CA" = 98  // Changed from 99
+          "MX" = 97  // Changed from 98
         }
       }
       "EU" = {
-        default = 98.0  // Changed from 97.5
+        default = 96  // Changed from 97
         countries = {
-          "DE" = 98.5  // Changed from 98.0
-          "FR" = 97.5  // Changed from 97.0
-          "UK" = 97.0  // Changed from 96.5
-          "ES" = 96.5  // Added new country
+          "DE" = 95  // Changed from 98
+          "FR" = 94  // Changed from 97
+          "UK" = 93  // Changed from 96
+          "ES" = 92  // Added new country
         }
       }
       "AS" = {
-        default = 96.5  // Changed from 96.0
+        default = 91  // Changed from 96.0
         countries = {
-          "JP" = 98.0   // Changed from 97.5
-          "CN" = 96.5   // Changed from 96.0
-          "KR" = 96.0   // Added new country
+          "JP" = 90   // Changed from 97
+          "CN" = 91   // Changed from 96
+          "KR" = 92   // Added new country
         }
       }
     }
@@ -635,7 +643,7 @@ resource "multicdn_preference" "comprehensive" {
             relative_threshold = 0.15  // Changed from 0.12
           }
           "FR" = {
-            mode = "absolute"
+            mode = "absolute"  // Changed from relative
             relative_threshold = 0.15  // Changed from 0.13
           }
         }

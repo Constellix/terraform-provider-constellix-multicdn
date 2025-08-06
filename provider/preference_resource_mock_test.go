@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"regexp"
 	"strconv"
-	"time"
 
 	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
 )
@@ -214,10 +213,6 @@ func handleCreatePreference(w http.ResponseWriter, r *http.Request, preferences 
 		return
 	}
 
-	// Set computed fields
-	preference.Version = "1.0"
-	preference.LastUpdated = time.Now()
-
 	// Store the resource
 	preferences[preference.ResourceID] = &preference
 
@@ -282,10 +277,6 @@ func handleUpdatePreference(w http.ResponseWriter, r *http.Request, preferences 
 		}
 		return
 	}
-
-	// Update computed fields
-	updatedPreference.Version = "1.1" // Increment version
-	updatedPreference.LastUpdated = time.Now()
 
 	// Update the resource
 	preferences[resourceID] = &updatedPreference

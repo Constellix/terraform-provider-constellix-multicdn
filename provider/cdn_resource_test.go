@@ -203,8 +203,8 @@ func TestAccCdnConfigResource_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "resource_id", "12345"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "content_type", "application/json"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "description", "Test Description"),
-					resource.TestCheckResourceAttrSet("multicdn_cdn_config.test", "version"),
-					resource.TestCheckResourceAttrSet("multicdn_cdn_config.test", "last_updated"),
+					resource.TestCheckNoResourceAttr("multicdn_cdn_config.test", "version"),
+					resource.TestCheckNoResourceAttr("multicdn_cdn_config.test", "last_updated"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "cdns.#", "2"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "cdns.0.cdn_name", "cdn1"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.test", "cdns.0.description", "Primary CDN"),
@@ -315,6 +315,8 @@ func TestAccCdnConfigResource_comprehensive(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "resource_id", "54321"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "content_type", "application/json"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "description", "Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "version", "1.0"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "last_updated", "2025-08-01T00:00:00Z"),
 					// Check CDN entries
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.#", "3"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.0.cdn_name", "cdn1"),
@@ -334,6 +336,8 @@ func TestAccCdnConfigResource_comprehensive(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckCdnConfigExists(54321, mockCdnConfigs),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "description", "Updated Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "version", "1.1"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "last_updated", "2025-08-02T00:00:00Z"),
 					// Check updated CDN entries
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.0.description", "Updated Primary CDN"),
 					// Check updated enablement map
@@ -383,7 +387,9 @@ resource "multicdn_cdn_config" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
-  
+  version = "1.0"
+  last_updated = "2025-08-01T00:00:00Z"
+
   // Three CDN entries
   cdns = [
     {
@@ -619,6 +625,8 @@ resource "multicdn_cdn_config" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
+  version = "1.1"
+  last_updated = "2025-08-02T00:00:00Z"
   
   // Updated CDN entries
   cdns = [

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -111,11 +112,11 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"version": schema.StringAttribute{
 				Description: "Version of the CDN preference configuration",
-				Computed:    true,
+				Optional:    true,
 			},
 			"last_updated": schema.StringAttribute{
 				Description: "Timestamp of when the configuration was last updated",
-				Computed:    true,
+				Optional:    true,
 			},
 			"availability_thresholds": schema.SingleNestedAttribute{
 				Description: "Availability thresholds configuration",
@@ -407,6 +408,17 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 		apiModel.Description = tfModel.Description.ValueString()
 	}
 
+	if !tfModel.Version.IsNull() {
+		apiModel.Version = tfModel.Version.ValueString()
+	}
+
+	if !tfModel.LastUpdated.IsNull() {
+		parsedTime, err := time.Parse(time.RFC3339, tfModel.LastUpdated.ValueString())
+		if err == nil {
+			apiModel.LastUpdated = parsedTime
+		}
+	}
+
 	// Convert AvailabilityThresholds
 	if tfModel.AvailabilityThresholds != nil {
 		if !tfModel.AvailabilityThresholds.World.IsNull() {
@@ -536,7 +548,7 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 	}
 
 	if !apiModel.LastUpdated.IsZero() {
-		tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.String())
+		tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.Format(time.RFC3339))
 	} else {
 		tfModel.LastUpdated = types.StringNull()
 	}
