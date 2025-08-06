@@ -21,10 +21,10 @@ type CdnConfigurationPage struct {
 // CdnConfiguration represents a CDN configuration document
 type CdnConfiguration struct {
 	ResourceID          int                 `json:"resourceId"`
-	ContentType         string              `json:"contentType,omitempty"`
-	Description         string              `json:"description,omitempty"`
-	Version             string              `json:"version,omitempty"`
-	LastUpdated         time.Time           `json:"lastUpdated,omitempty"`
+	ContentType         *string             `json:"contentType,omitempty"`
+	Description         *string             `json:"description,omitempty"`
+	Version             *string             `json:"version,omitempty"`
+	LastUpdated         *time.Time          `json:"lastUpdated,omitempty"`
 	Cdns                []CdnEntry          `json:"cdns"`
 	CdnEnablementMap    CdnEnablementMap    `json:"cdnEnablementMap"`
 	TrafficDistribution TrafficDistribution `json:"trafficDistribution"`
@@ -32,13 +32,13 @@ type CdnConfiguration struct {
 
 // CdnConfigurationResponse represents a CDN configuration response from the API
 type CdnConfigurationResponse struct {
-	ID                  string              `json:"id,omitempty"`
-	AccountID           int                 `json:"accountId,omitempty"`
+	ID                  *string             `json:"id,omitempty"`
+	AccountID           *int                `json:"accountId,omitempty"`
 	ResourceID          int                 `json:"resourceId"`
-	ContentType         string              `json:"contentType,omitempty"`
-	Description         string              `json:"description,omitempty"`
-	Version             string              `json:"version,omitempty"`
-	LastUpdated         time.Time           `json:"lastUpdated,omitempty"`
+	ContentType         *string             `json:"contentType,omitempty"`
+	Description         *string             `json:"description,omitempty"`
+	Version             *string             `json:"version,omitempty"`
+	LastUpdated         *time.Time          `json:"lastUpdated,omitempty"`
 	Cdns                []CdnEntry          `json:"cdns"`
 	CdnEnablementMap    CdnEnablementMap    `json:"cdnEnablementMap"`
 	TrafficDistribution TrafficDistribution `json:"trafficDistribution"`
@@ -46,10 +46,10 @@ type CdnConfigurationResponse struct {
 
 // CdnEntry represents a CDN provider entry
 type CdnEntry struct {
-	CdnName     string `json:"cdnName"`
-	Description string `json:"description,omitempty"`
-	FQDN        string `json:"fqdn"`
-	ClientCdnID string `json:"clientCdnId"`
+	CdnName     string  `json:"cdnName"`
+	Description *string `json:"description,omitempty"`
+	FQDN        string  `json:"fqdn"`
+	ClientCdnID string  `json:"clientCdnId"`
 }
 
 // CdnEnablementMap represents the CDN enablement configuration
@@ -79,7 +79,7 @@ type SubdivisionEnablement struct {
 
 // TrafficDistribution represents the traffic distribution configuration
 type TrafficDistribution struct {
-	WorldDefault WorldDefault                     `json:"worldDefault,omitempty"`
+	WorldDefault *WorldDefault                    `json:"worldDefault,omitempty"`
 	Continents   map[string]ContinentDistribution `json:"continents,omitempty"`
 }
 
@@ -90,13 +90,13 @@ type WorldDefault struct {
 
 // ContinentDistribution represents traffic distribution for a continent
 type ContinentDistribution struct {
-	Default   TrafficOptionList              `json:"default,omitempty"`
+	Default   *TrafficOptionList             `json:"default,omitempty"`
 	Countries map[string]CountryDistribution `json:"countries,omitempty"`
 }
 
 // CountryDistribution represents traffic distribution for a country
 type CountryDistribution struct {
-	Default TrafficOptionList `json:"default,omitempty"`
+	Default *TrafficOptionList `json:"default,omitempty"`
 }
 
 // TrafficOptionList represents a list of traffic distribution options
@@ -107,13 +107,13 @@ type TrafficOptionList struct {
 // TrafficOption represents a traffic distribution configuration option
 type TrafficOption struct {
 	Name         string              `json:"name"`
-	Description  string              `json:"description,omitempty"`
-	EqualWeight  bool                `json:"equalWeight,omitempty"`
+	Description  *string             `json:"description,omitempty"`
+	EqualWeight  *bool               `json:"equalWeight,omitempty"`
 	Distribution []DistributionEntry `json:"distribution"`
 }
 
 // DistributionEntry represents a single entry in a traffic distribution
 type DistributionEntry struct {
 	ID     string `json:"id"`
-	Weight int    `json:"weight,omitempty"`
+	Weight *int   `json:"weight,omitempty"`
 }

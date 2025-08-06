@@ -410,14 +410,20 @@ func TestCRUDOperations(t *testing.T) {
 	ctx := context.Background()
 
 	// Test CDN config for create and update operations
+	contentType := "application/json"
+	description := "Test CDN config"
+	cdnDescription := "CDN Provider 1"
+	equalWeight := false
+	weight := 100
+
 	config := &CdnConfiguration{
 		ResourceID:  123,
-		ContentType: "application/json",
-		Description: "Test CDN config",
+		ContentType: &contentType,
+		Description: &description,
 		Cdns: []CdnEntry{
 			{
 				CdnName:     "cdn1",
-				Description: "CDN Provider 1",
+				Description: &cdnDescription,
 				FQDN:        "cdn1.example.com",
 				ClientCdnID: "CDN1",
 			},
@@ -426,15 +432,15 @@ func TestCRUDOperations(t *testing.T) {
 			WorldDefault: map[string][]string{"default": {"cdn1"}},
 		},
 		TrafficDistribution: TrafficDistribution{
-			WorldDefault: WorldDefault{
+			WorldDefault: &WorldDefault{
 				Options: []TrafficOption{
 					{
 						Name:        "default",
-						EqualWeight: false,
+						EqualWeight: &equalWeight,
 						Distribution: []DistributionEntry{
 							{
 								ID:     "cdn1",
-								Weight: 100,
+								Weight: &weight,
 							},
 						},
 					},
@@ -465,13 +471,14 @@ func TestCRUDOperations(t *testing.T) {
 	}
 
 	// Test Update
-	config.Description = "Updated CDN config"
+	updatedDescription := "Updated CDN config"
+	config.Description = &updatedDescription
 	updatedConfig, err := client.UpdateCdnConfig(ctx, 123, config)
 	if err != nil {
 		t.Errorf("UpdateCdnConfig() error = %v", err)
 	}
-	if updatedConfig.Description != "Updated CDN config" {
-		t.Errorf("UpdateCdnConfig() expected description 'Updated CDN config', got '%s'", updatedConfig.Description)
+	if updatedConfig.Description == nil || *updatedConfig.Description != "Updated CDN config" {
+		t.Errorf("UpdateCdnConfig() expected description 'Updated CDN config', got '%v'", updatedConfig.Description)
 	}
 
 	// Test Delete
@@ -524,7 +531,7 @@ func TestGetCdnComponents(t *testing.T) {
 	if err != nil {
 		t.Errorf("GetTrafficDistribution() error = %v", err)
 	}
-	if len(distribution.WorldDefault.Options) == 0 {
+	if distribution.WorldDefault == nil || len(distribution.WorldDefault.Options) == 0 {
 		t.Errorf("GetTrafficDistribution() expected worldDefault options, got none")
 	}
 	if len(distribution.Continents) == 0 {
