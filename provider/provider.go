@@ -112,6 +112,7 @@ func (p *multiCDNProvider) Configure(ctx context.Context, req provider.Configure
 func (p *multiCDNProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewPreferenceResource,
+		NewCdnResource,
 	}
 }
 
