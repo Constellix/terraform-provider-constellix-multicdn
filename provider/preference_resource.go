@@ -515,10 +515,31 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 
 func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Preference, tfModel *preferenceResourceModel) {
 	tfModel.ResourceID = types.Int64Value(int64(apiModel.ResourceID))
-	tfModel.ContentType = types.StringValue(apiModel.ContentType)
-	tfModel.Description = types.StringValue(apiModel.Description)
-	tfModel.Version = types.StringValue(apiModel.Version)
-	tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.String())
+
+	// Fix for empty strings - use null values instead of empty strings
+	if apiModel.ContentType != "" {
+		tfModel.ContentType = types.StringValue(apiModel.ContentType)
+	} else {
+		tfModel.ContentType = types.StringNull()
+	}
+
+	if apiModel.Description != "" {
+		tfModel.Description = types.StringValue(apiModel.Description)
+	} else {
+		tfModel.Description = types.StringNull()
+	}
+
+	if apiModel.Version != "" {
+		tfModel.Version = types.StringValue(apiModel.Version)
+	} else {
+		tfModel.Version = types.StringNull()
+	}
+
+	if !apiModel.LastUpdated.IsZero() {
+		tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.String())
+	} else {
+		tfModel.LastUpdated = types.StringNull()
+	}
 
 	// Convert AvailabilityThresholds
 	tfModel.AvailabilityThresholds = &availabilityThresholdsModel{
@@ -590,14 +611,13 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		}
 	}
 
-	// Convert EnabledSubdivisionCountries
+	// Convert EnabledSubdivisionCountries - FIX: handle empty case properly
 	tfModel.EnabledSubdivisionCountries = &enabledSubdivisionCountriesModel{
-		Continents: nil, // Initialize as nil, not empty map
+		Continents: make(map[string]*continentSubdivisionsModel), // Always initialize to empty map, not nil
 	}
 
-	// Only initialize continents map if there are actual continents
+	// Add any continents if they exist
 	if len(apiModel.EnabledSubdivisionCountries.Continents) > 0 {
-		tfModel.EnabledSubdivisionCountries.Continents = make(map[string]*continentSubdivisionsModel)
 
 		for continent, apiContinent := range apiModel.EnabledSubdivisionCountries.Continents {
 			// Only create a model if there are actual countries
