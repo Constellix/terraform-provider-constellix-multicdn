@@ -523,67 +523,95 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 	// Convert AvailabilityThresholds
 	tfModel.AvailabilityThresholds = &availabilityThresholdsModel{
 		World:      types.Float64Value(apiModel.AvailabilityThresholds.World),
-		Continents: make(map[string]*continentThresholdModel),
+		Continents: nil, // Initialize as nil, not empty map
 	}
 
-	for continent, apiContinent := range apiModel.AvailabilityThresholds.Continents {
-		tfContinent := &continentThresholdModel{
-			Default:   types.Float64Value(apiContinent.Default),
-			Countries: make(map[string]types.Float64),
-		}
+	// Only initialize continents map if there are actual continents
+	if len(apiModel.AvailabilityThresholds.Continents) > 0 {
+		tfModel.AvailabilityThresholds.Continents = make(map[string]*continentThresholdModel)
 
-		for country, threshold := range apiContinent.Countries {
-			tfContinent.Countries[country] = types.Float64Value(threshold)
-		}
+		for continent, apiContinent := range apiModel.AvailabilityThresholds.Continents {
+			tfContinent := &continentThresholdModel{
+				Default:   types.Float64Value(apiContinent.Default),
+				Countries: nil, // Initialize as nil, not empty map
+			}
 
-		tfModel.AvailabilityThresholds.Continents[continent] = tfContinent
+			// Only initialize countries map if there are actual countries
+			if len(apiContinent.Countries) > 0 {
+				tfContinent.Countries = make(map[string]types.Float64)
+
+				for country, threshold := range apiContinent.Countries {
+					tfContinent.Countries[country] = types.Float64Value(threshold)
+				}
+			}
+
+			tfModel.AvailabilityThresholds.Continents[continent] = tfContinent
+		}
 	}
 
 	// Convert PerformanceFiltering
 	tfModel.PerformanceFiltering = &performanceFilteringModel{
 		World:      &performanceConfigModel{},
-		Continents: make(map[string]*continentPerformanceConfigModel),
+		Continents: nil, // Initialize as nil, not empty map
 	}
 
 	// Convert World performance config
 	tfModel.PerformanceFiltering.World.Mode = types.StringValue(apiModel.PerformanceFiltering.World.Mode)
 	tfModel.PerformanceFiltering.World.RelativeThreshold = types.Float64Value(apiModel.PerformanceFiltering.World.RelativeThreshold)
 
-	// Convert Continents performance config
-	for continent, apiContinent := range apiModel.PerformanceFiltering.Continents {
-		tfContinent := &continentPerformanceConfigModel{
-			Mode:              types.StringValue(apiContinent.Mode),
-			RelativeThreshold: types.Float64Value(apiContinent.RelativeThreshold),
-			Countries:         make(map[string]*performanceConfigModel),
-		}
+	// Only initialize continents map if there are actual continents
+	if len(apiModel.PerformanceFiltering.Continents) > 0 {
+		tfModel.PerformanceFiltering.Continents = make(map[string]*continentPerformanceConfigModel)
 
-		// Convert Countries performance config
-		for country, apiCountry := range apiContinent.Countries {
-			tfCountry := &performanceConfigModel{
-				Mode:              types.StringValue(apiCountry.Mode),
-				RelativeThreshold: types.Float64Value(apiCountry.RelativeThreshold),
+		// Convert Continents performance config
+		for continent, apiContinent := range apiModel.PerformanceFiltering.Continents {
+			tfContinent := &continentPerformanceConfigModel{
+				Mode:              types.StringValue(apiContinent.Mode),
+				RelativeThreshold: types.Float64Value(apiContinent.RelativeThreshold),
+				Countries:         nil, // Initialize as nil, not empty map
 			}
 
-			tfContinent.Countries[country] = tfCountry
-		}
+			// Only initialize countries map if there are actual countries
+			if len(apiContinent.Countries) > 0 {
+				tfContinent.Countries = make(map[string]*performanceConfigModel)
 
-		tfModel.PerformanceFiltering.Continents[continent] = tfContinent
+				// Convert Countries performance config
+				for country, apiCountry := range apiContinent.Countries {
+					tfCountry := &performanceConfigModel{
+						Mode:              types.StringValue(apiCountry.Mode),
+						RelativeThreshold: types.Float64Value(apiCountry.RelativeThreshold),
+					}
+
+					tfContinent.Countries[country] = tfCountry
+				}
+			}
+
+			tfModel.PerformanceFiltering.Continents[continent] = tfContinent
+		}
 	}
 
 	// Convert EnabledSubdivisionCountries
 	tfModel.EnabledSubdivisionCountries = &enabledSubdivisionCountriesModel{
-		Continents: make(map[string]*continentSubdivisionsModel),
+		Continents: nil, // Initialize as nil, not empty map
 	}
 
-	for continent, apiContinent := range apiModel.EnabledSubdivisionCountries.Continents {
-		tfContinent := &continentSubdivisionsModel{
-			Countries: make([]types.String, 0, len(apiContinent.Countries)),
-		}
+	// Only initialize continents map if there are actual continents
+	if len(apiModel.EnabledSubdivisionCountries.Continents) > 0 {
+		tfModel.EnabledSubdivisionCountries.Continents = make(map[string]*continentSubdivisionsModel)
 
-		for _, country := range apiContinent.Countries {
-			tfContinent.Countries = append(tfContinent.Countries, types.StringValue(country))
-		}
+		for continent, apiContinent := range apiModel.EnabledSubdivisionCountries.Continents {
+			// Only create a model if there are actual countries
+			if len(apiContinent.Countries) > 0 {
+				tfContinent := &continentSubdivisionsModel{
+					Countries: make([]types.String, 0, len(apiContinent.Countries)),
+				}
 
-		tfModel.EnabledSubdivisionCountries.Continents[continent] = tfContinent
+				for _, country := range apiContinent.Countries {
+					tfContinent.Countries = append(tfContinent.Countries, types.StringValue(country))
+				}
+
+				tfModel.EnabledSubdivisionCountries.Continents[continent] = tfContinent
+			}
+		}
 	}
 }

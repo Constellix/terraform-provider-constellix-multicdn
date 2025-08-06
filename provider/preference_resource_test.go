@@ -20,14 +20,10 @@ func setupAccProtoV6ProviderFactories() (*httptest.Server, map[int]*preferencecl
 	// Create the mock server
 	mockServer, mockPreferences := setupMockPreferenceServer()
 
-	// Get the mock server URL
-	// mockServerURL := mockServer.URL
-
 	// Create provider factories using the mock server URL
 	factories := map[string]func() (tfprotov6.ProviderServer, error){
 		"multicdn": func() (tfprotov6.ProviderServer, error) {
 			testProvider := provider.New()
-			// We'll provide the mock server URL in the test configuration
 			return providerserver.NewProtocol6(testProvider)(), nil
 		},
 	}
