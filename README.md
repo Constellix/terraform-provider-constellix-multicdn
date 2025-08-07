@@ -118,13 +118,13 @@ terraform destroy
 To import existing CDN configurations:
 
 ```shell
-terraform import multicdn_cdn.example [resource_id]
+terraform import multicdn_cdn_config.example [resource_id]
 ```
 
 To import existing preference settings:
 
 ```shell
-terraform import multicdn_preference.example [resource_id]
+terraform import multicdn_preference_config.example [resource_id]
 ```
 
 ## Development

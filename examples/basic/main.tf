@@ -92,7 +92,7 @@ resource "multicdn_cdn_config" "example_website" {
 }
 
 # Create a preference resource
-resource "multicdn_preference" "example_website_preferences" {
+resource "multicdn_preference_config" "example_website_preferences" {
   resource_id = multicdn_cdn_config.example_website.resource_id
   content_type = "website"
   description  = "CDN preference settings for main website"

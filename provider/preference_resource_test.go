@@ -22,11 +22,11 @@ func TestAccPreferenceResource_basic(t *testing.T) {
 			{
 				Config: testAccPreferenceResourceConfig(mockServer.URL, "Test Description"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("multicdn_preference.test", "resource_id", "12345"),
-					resource.TestCheckResourceAttr("multicdn_preference.test", "content_type", "application/json"),
-					resource.TestCheckResourceAttr("multicdn_preference.test", "description", "Test Description"),
-					resource.TestCheckNoResourceAttr("multicdn_preference.test", "version"),
-					resource.TestCheckNoResourceAttr("multicdn_preference.test", "last_updated"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "resource_id", "12345"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "content_type", "application/json"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "description", "Test Description"),
+					resource.TestCheckNoResourceAttr("multicdn_preference_config.test", "version"),
+					resource.TestCheckNoResourceAttr("multicdn_preference_config.test", "last_updated"),
 					// Check that the preference exists in our mock store
 					testAccCheckPreferenceExists(12345, mockPreferences),
 				),
@@ -35,13 +35,13 @@ func TestAccPreferenceResource_basic(t *testing.T) {
 			{
 				Config: testAccPreferenceResourceConfig(mockServer.URL, "Updated Description"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("multicdn_preference.test", "description", "Updated Description"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "description", "Updated Description"),
 					testAccCheckPreferenceDescription(12345, "Updated Description", mockPreferences),
 				),
 			},
 			// Import testing
 			{
-				ResourceName:                         "multicdn_preference.test",
+				ResourceName:                         "multicdn_preference_config.test",
 				ImportStateVerifyIdentifierAttribute: "resource_id",
 				ImportStateId:                        "12345",
 				ImportState:                          true,
@@ -82,8 +82,8 @@ func TestAccPreferenceResource_completeLifecycle(t *testing.T) {
 			{
 				Config: testAccPreferenceResourceConfig(mockServer.URL, "Initial Resource"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testAccCheckPreferenceResourceExists("multicdn_preference.test", &resourceID),
-					resource.TestCheckResourceAttr("multicdn_preference.test", "description", "Initial Resource"),
+					testAccCheckPreferenceResourceExists("multicdn_preference_config.test", &resourceID),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "description", "Initial Resource"),
 					testAccCheckPreferenceExists(12345, mockPreferences),
 				),
 			},
@@ -91,18 +91,18 @@ func TestAccPreferenceResource_completeLifecycle(t *testing.T) {
 			{
 				Config: testAccPreferenceResourceUpdateConfig(mockServer.URL, "Updated Resource"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					testAccCheckPreferenceResourceExists("multicdn_preference.test", &resourceID),
-					resource.TestCheckResourceAttr("multicdn_preference.test", "description", "Updated Resource"),
+					testAccCheckPreferenceResourceExists("multicdn_preference_config.test", &resourceID),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "description", "Updated Resource"),
 					// Check updated availability thresholds
-					resource.TestCheckResourceAttr("multicdn_preference.test", "availability_thresholds.world", "96"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "availability_thresholds.world", "96"),
 					// Check updated performance filtering
-					resource.TestCheckResourceAttr("multicdn_preference.test", "performance_filtering.world.relative_threshold", "0.3"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "performance_filtering.world.relative_threshold", "0.3"),
 					testAccCheckPreferenceWorld(12345, 96, mockPreferences),
 				),
 			},
 			// Import the resource
 			{
-				ResourceName:                         "multicdn_preference.test",
+				ResourceName:                         "multicdn_preference_config.test",
 				ImportStateVerifyIdentifierAttribute: "resource_id",
 				ImportStateId:                        "12345", // Explicitly set the ID to import
 				ImportState:                          true,
@@ -128,29 +128,29 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 				Config: testAccPreferenceResourceConfigComprehensive(mockServer.URL, "Comprehensive Config"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckPreferenceExists(54321, mockPreferences),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "resource_id", "54321"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "content_type", "application/json"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "description", "Comprehensive Config"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "version", "1.0"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "last_updated", "2025-08-01T00:00:00Z"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "resource_id", "54321"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "content_type", "application/json"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "description", "Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "version", "1.0"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "last_updated", "2025-08-01T00:00:00Z"),
 					// Check availability thresholds - Using the exact string representation without trailing zeros
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "95"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "98"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.default", "97"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.US", "99"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.countries.CA", "99"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.DE", "98"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.EU.countries.FR", "97"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.world", "95"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.NA.default", "98"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.EU.default", "97"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.NA.countries.US", "99"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.NA.countries.CA", "99"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.EU.countries.DE", "98"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.EU.countries.FR", "97"),
 					// Check performance filtering
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.mode", "relative"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.relative_threshold", "0.25"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.NA.mode", "relative"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.NA.relative_threshold", "0.2"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.EU.mode", "absolute"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.EU.relative_threshold", "0.15"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.world.mode", "relative"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.world.relative_threshold", "0.25"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.NA.mode", "relative"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.NA.relative_threshold", "0.2"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.mode", "absolute"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.relative_threshold", "0.15"),
 					// Check enabled subdivision countries
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "2"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "enabled_subdivision_countries.continents.EU.countries.#", "2"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "2"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.EU.countries.#", "2"),
 				),
 			},
 			// Update with modifications to nested fields
@@ -158,17 +158,17 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 				Config: testAccPreferenceResourceConfigComprehensiveUpdated(mockServer.URL, "Updated Comprehensive Config"),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckPreferenceExists(54321, mockPreferences),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "description", "Updated Comprehensive Config"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "version", "1.1"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "last_updated", "2025-08-02T00:00:00Z"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "description", "Updated Comprehensive Config"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "version", "1.1"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "last_updated", "2025-08-02T00:00:00Z"),
 					// Check updated availability thresholds
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.world", "96"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "availability_thresholds.continents.NA.default", "99"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.world", "96"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "availability_thresholds.continents.NA.default", "99"),
 					// Check updated performance filtering
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.world.relative_threshold", "0.3"),
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "performance_filtering.continents.EU.mode", "relative"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.world.relative_threshold", "0.3"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.mode", "relative"),
 					// Check updated enabled subdivision countries
-					resource.TestCheckResourceAttr("multicdn_preference.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "3"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "3"),
 				),
 			},
 		},
@@ -188,14 +188,14 @@ func TestAccPreferenceResource_minimal(t *testing.T) {
 				Config: testAccPreferenceResourceConfigMinimal(mockServer.URL),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					testAccCheckPreferenceExists(98765, mockPreferences),
-					resource.TestCheckResourceAttr("multicdn_preference.minimal", "resource_id", "98765"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.minimal", "resource_id", "98765"),
 					// Check minimal availability thresholds - using exact string representation
-					resource.TestCheckResourceAttr("multicdn_preference.minimal", "availability_thresholds.world", "95"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.minimal", "availability_thresholds.world", "95"),
 					// Check minimal performance filtering
-					resource.TestCheckResourceAttr("multicdn_preference.minimal", "performance_filtering.world.mode", "relative"),
-					resource.TestCheckResourceAttr("multicdn_preference.minimal", "performance_filtering.world.relative_threshold", "0.1"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.minimal", "performance_filtering.world.mode", "relative"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.minimal", "performance_filtering.world.relative_threshold", "0.1"),
 					// Check empty continents map explicitly using % wildcard for map
-					resource.TestCheckResourceAttr("multicdn_preference.minimal", "enabled_subdivision_countries.continents.%", "0"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.minimal", "enabled_subdivision_countries.continents.%", "0"),
 				),
 			},
 		},
@@ -280,7 +280,7 @@ provider "multicdn" {
   base_url   = "%s"  # Use the mock server URL
 }
 
-resource "multicdn_preference" "test" {
+resource "multicdn_preference_config" "test" {
   resource_id = 12345
   content_type = "application/json"
   description = "%s"
@@ -337,7 +337,7 @@ provider "multicdn" {
   base_url   = "%s"
 }
 
-resource "multicdn_preference" "test" {
+resource "multicdn_preference_config" "test" {
   resource_id = 12345
   content_type = "application/json"
   description = "%s"
@@ -394,7 +394,7 @@ provider "multicdn" {
   base_url   = "%s"
 }
 
-resource "multicdn_preference" "test" {
+resource "multicdn_preference_config" "test" {
   resource_id = -1  # Invalid negative ID
   content_type = "application/json"
   description = "Invalid Resource"
@@ -426,7 +426,7 @@ provider "multicdn" {
   base_url = "%s"
 }
 
-resource "multicdn_preference" "comprehensive" {
+resource "multicdn_preference_config" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
@@ -545,7 +545,7 @@ provider "multicdn" {
   base_url = "%s"
 }
 
-resource "multicdn_preference" "comprehensive" {
+resource "multicdn_preference_config" "comprehensive" {
   resource_id = 54321
   content_type = "application/json"
   description = "%s"
@@ -669,7 +669,7 @@ provider "multicdn" {
   base_url = "%s"
 }
 
-resource "multicdn_preference" "minimal" {
+resource "multicdn_preference_config" "minimal" {
   resource_id = 98765
   
   // Minimal availability thresholds
