@@ -526,7 +526,7 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 }
 
 func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Preference, tfModel *preferenceResourceModel) {
-	tfModel.ResourceID = types.Int64Value(int64(apiModel.ResourceID))
+	tfModel.ResourceID = types.Int64Value(apiModel.ResourceID)
 
 	// Fix for empty strings - use null values instead of empty strings
 	if apiModel.ContentType != "" {

@@ -65,7 +65,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			_ = json.NewEncoder(w).Encode(response)
 
 		case r.URL.Path == "/cdn-configs" && r.Method == http.MethodPost:
 			// Create a new configuration
@@ -78,7 +78,11 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			// Validate the request
 			if newConfig.ResourceID <= 0 {
 				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte("resource_id must be a positive integer"))
+				_, err := w.Write([]byte("resource_id must be a positive integer"))
+				if err != nil {
+					http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+					return
+				}
 				return
 			}
 
@@ -105,7 +109,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			// Return the created configuration
 			w.WriteHeader(http.StatusCreated)
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(configResponse)
+			_ = json.NewEncoder(w).Encode(configResponse)
 
 		case strings.HasPrefix(r.URL.Path, "/cdn-configs/") && r.Method == http.MethodGet:
 			// Get a specific configuration by ID
@@ -128,7 +132,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(config)
+			_ = json.NewEncoder(w).Encode(config)
 
 		case strings.HasPrefix(r.URL.Path, "/cdn-configs/") && r.Method == http.MethodPut:
 			// Update a specific configuration
@@ -179,7 +183,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 
 			// Return the updated configuration
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(updatedConfig)
+			_ = json.NewEncoder(w).Encode(updatedConfig)
 
 		case strings.HasPrefix(r.URL.Path, "/cdn-configs/") && r.Method == http.MethodDelete:
 			// Delete a specific configuration
@@ -229,7 +233,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(config.Cdns)
+			_ = json.NewEncoder(w).Encode(config.Cdns)
 
 		case strings.HasPrefix(r.URL.Path, "/cdn-configs/") && strings.HasSuffix(r.URL.Path, "/enablement") && r.Method == http.MethodGet:
 			// Get enablement map for a configuration
@@ -253,7 +257,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(config.CdnEnablementMap)
+			_ = json.NewEncoder(w).Encode(config.CdnEnablementMap)
 
 		case strings.HasPrefix(r.URL.Path, "/cdn-configs/") && strings.HasSuffix(r.URL.Path, "/trafficDistribution") && r.Method == http.MethodGet:
 			// Get traffic distribution for a configuration
@@ -277,7 +281,7 @@ func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurati
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(config.TrafficDistribution)
+			_ = json.NewEncoder(w).Encode(config.TrafficDistribution)
 
 		default:
 			w.WriteHeader(http.StatusNotFound)

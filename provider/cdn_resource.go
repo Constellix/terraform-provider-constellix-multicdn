@@ -859,7 +859,7 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 }
 
 func (r *cdnResource) convertFromAPIModel(apiModel *cdnclient.CdnConfigurationResponse, tfModel *cdnResourceModel) {
-	tfModel.ResourceID = types.Int64Value(int64(apiModel.ResourceID))
+	tfModel.ResourceID = types.Int64Value(apiModel.ResourceID)
 
 	// Handle optional fields with pointers
 	if apiModel.ContentType != nil {
@@ -1054,7 +1054,7 @@ func (r *cdnResource) convertFromAPIModel(apiModel *cdnclient.CdnConfigurationRe
 				}
 
 				if apiDist.Weight != nil {
-					tfDist.Weight = types.Int64Value(int64(*apiDist.Weight))
+					tfDist.Weight = types.Int64Value(*apiDist.Weight)
 				} else {
 					tfDist.Weight = types.Int64Null()
 				}
@@ -1106,7 +1106,7 @@ func (r *cdnResource) convertFromAPIModel(apiModel *cdnclient.CdnConfigurationRe
 						}
 
 						if apiDist.Weight != nil {
-							tfDist.Weight = types.Int64Value(int64(*apiDist.Weight))
+							tfDist.Weight = types.Int64Value(*apiDist.Weight)
 						} else {
 							tfDist.Weight = types.Int64Null()
 						}
@@ -1158,7 +1158,7 @@ func (r *cdnResource) convertFromAPIModel(apiModel *cdnclient.CdnConfigurationRe
 								}
 
 								if apiDist.Weight != nil {
-									tfDist.Weight = types.Int64Value(int64(*apiDist.Weight))
+									tfDist.Weight = types.Int64Value(*apiDist.Weight)
 								} else {
 									tfDist.Weight = types.Int64Null()
 								}
