@@ -62,9 +62,7 @@ resource "multicdn_cdn_config" "test" {
   ]
   
   cdn_enablement_map = {
-    world_default = {
-      "default" = ["cdn1", "cdn2"]
-    }
+    world_default = ["cdn1", "cdn2"]
     
     continents = {
       "EU" = {
@@ -164,9 +162,7 @@ resource "multicdn_cdn_config" "test" {
   ]
   
   cdn_enablement_map = {
-    world_default = {
-      "default" = ["cdn1"]
-    }
+    world_default = ["cdn1"]
   }
   
   traffic_distribution = {
@@ -323,7 +319,7 @@ func TestAccCdnConfigResource_comprehensive(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.1.cdn_name", "cdn2"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.2.cdn_name", "cdn3"),
 					// Check enablement map
-					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.world_default.default.#", "2"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.world_default.#", "2"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.asn_overrides.12345.#", "1"),
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.asn_overrides.67890.#", "2"),
 					// Check traffic distribution
@@ -341,7 +337,7 @@ func TestAccCdnConfigResource_comprehensive(t *testing.T) {
 					// Check updated CDN entries
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdns.0.description", "Updated Primary CDN"),
 					// Check updated enablement map
-					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.world_default.default.#", "3"),
+					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "cdn_enablement_map.world_default.#", "3"),
 					// Check updated traffic distribution
 					resource.TestCheckResourceAttr("multicdn_cdn_config.comprehensive", "traffic_distribution.world_default.options.0.distribution.0.weight", "60"),
 				),
@@ -414,9 +410,7 @@ resource "multicdn_cdn_config" "comprehensive" {
   
   // Comprehensive enablement map
   cdn_enablement_map = {
-    world_default = {
-      "default" = ["cdn1", "cdn2"]
-    }
+    world_default = ["cdn1", "cdn2"]
     
     asn_overrides = {
       "12345" = ["cdn1"]
@@ -652,9 +646,7 @@ resource "multicdn_cdn_config" "comprehensive" {
   
   // Updated enablement map
   cdn_enablement_map = {
-    world_default = {
-      "default" = ["cdn1", "cdn2", "cdn3"]  // Added cdn3
-    }
+    world_default = ["cdn1", "cdn2", "cdn3"]  // Added cdn3
     
     asn_overrides = {
       "12345" = ["cdn1", "cdn3"]  // Added cdn3
@@ -854,9 +846,7 @@ resource "multicdn_cdn_config" "minimal" {
   
   // Minimal required enablement map
   cdn_enablement_map = {
-    world_default = {
-      "default" = ["minimal-cdn"]
-    }
+    world_default = ["minimal-cdn"]
   }
   
   // Minimal required traffic distribution

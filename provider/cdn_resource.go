@@ -50,7 +50,7 @@ type cdnEntryModel struct {
 
 // cdnEnablementMapModel maps the CDN enablement map schema
 type cdnEnablementMapModel struct {
-	WorldDefault map[string][]types.String            `tfsdk:"world_default"`
+	WorldDefault []types.String                       `tfsdk:"world_default"`
 	ASNOverrides map[string][]types.String            `tfsdk:"asn_overrides"`
 	Continents   map[string]*continentEnablementModel `tfsdk:"continents"`
 }
@@ -180,12 +180,10 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 				Description: "CDN enablement configuration",
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
-					"world_default": schema.MapAttribute{
+					"world_default": schema.ListAttribute{
 						Description: "Default CDNs enabled globally",
 						Optional:    true,
-						ElementType: types.ListType{
-							ElemType: types.StringType,
-						},
+						ElementType: types.StringType,
 					},
 					"asn_overrides": schema.MapAttribute{
 						Description: "ASN-specific CDN overrides",
@@ -612,13 +610,9 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 	if tfModel.CdnEnablementMap != nil {
 		// World default
 		if tfModel.CdnEnablementMap.WorldDefault != nil && len(tfModel.CdnEnablementMap.WorldDefault) > 0 {
-			apiModel.CdnEnablementMap.WorldDefault = make(map[string][]string)
-			for asn, cdnList := range tfModel.CdnEnablementMap.WorldDefault {
-				apiCdns := make([]string, 0, len(cdnList))
-				for _, cdn := range cdnList {
-					apiCdns = append(apiCdns, cdn.ValueString())
-				}
-				apiModel.CdnEnablementMap.WorldDefault[asn] = apiCdns
+			apiModel.CdnEnablementMap.WorldDefault = make([]string, 0, len(tfModel.CdnEnablementMap.WorldDefault))
+			for _, cdn := range tfModel.CdnEnablementMap.WorldDefault {
+				apiModel.CdnEnablementMap.WorldDefault = append(apiModel.CdnEnablementMap.WorldDefault, cdn.ValueString())
 			}
 		}
 
@@ -906,22 +900,19 @@ func (r *cdnResource) convertFromAPIModel(apiModel *cdnclient.CdnConfigurationRe
 
 	// Convert CDN enablement map
 	tfModel.CdnEnablementMap = &cdnEnablementMapModel{
-		WorldDefault: make(map[string][]types.String),
-		ASNOverrides: nil, // Initialize as nil, not empty map
+		WorldDefault: make([]types.String, 0), // Initialize as empty slice
+		ASNOverrides: nil,                     // Initialize as nil, not empty map
 		Continents:   make(map[string]*continentEnablementModel),
 	}
 
 	// World default
 	if len(apiModel.CdnEnablementMap.WorldDefault) > 0 {
-		for asn, cdnList := range apiModel.CdnEnablementMap.WorldDefault {
-			tfCdns := make([]types.String, 0, len(cdnList))
-			for _, cdn := range cdnList {
-				tfCdns = append(tfCdns, types.StringValue(cdn))
-			}
-			tfModel.CdnEnablementMap.WorldDefault[asn] = tfCdns
+		tfModel.CdnEnablementMap.WorldDefault = make([]types.String, 0, len(apiModel.CdnEnablementMap.WorldDefault))
+		for _, cdn := range apiModel.CdnEnablementMap.WorldDefault {
+			tfModel.CdnEnablementMap.WorldDefault = append(tfModel.CdnEnablementMap.WorldDefault, types.StringValue(cdn))
 		}
 	} else {
-		tfModel.CdnEnablementMap.WorldDefault = nil // Convert empty map to nil
+		tfModel.CdnEnablementMap.WorldDefault = nil // Empty slice becomes nil
 	}
 
 	// ASN overrides

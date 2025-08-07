@@ -54,7 +54,7 @@ type CdnEntry struct {
 
 // CdnEnablementMap represents the CDN enablement configuration
 type CdnEnablementMap struct {
-	WorldDefault map[string][]string            `json:"worldDefault"`
+	WorldDefault []string                       `json:"worldDefault"`
 	ASNOverrides map[string][]string            `json:"asnOverrides"`
 	Continents   map[string]ContinentEnablement `json:"continents"`
 }

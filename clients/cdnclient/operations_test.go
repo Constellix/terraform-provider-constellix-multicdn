@@ -56,9 +56,7 @@ func setupMockServer(t *testing.T) *httptest.Server {
 						}
 					],
 					"cdnEnablementMap": {
-						"worldDefault": {
-							"default": ["cdn1"]
-						},
+						"worldDefault": ["cdn1"],
 						"asnOverrides": {},
 						"continents": {}
 					},
@@ -115,9 +113,7 @@ func setupMockServer(t *testing.T) *httptest.Server {
 					}
 				],
 				"cdnEnablementMap": {
-					"worldDefault": {
-						"default": ["cdn1"]
-					},
+					"worldDefault": ["cdn1"],
 					"asnOverrides": {},
 					"continents": {}
 				},
@@ -158,9 +154,7 @@ func setupMockServer(t *testing.T) *httptest.Server {
 					}
 				],
 				"cdnEnablementMap": {
-					"worldDefault": {
-						"default": ["cdn1"]
-					},
+					"worldDefault": ["cdn1"],
 					"asnOverrides": {},
 					"continents": {}
 				},
@@ -208,9 +202,7 @@ func setupMockServer(t *testing.T) *httptest.Server {
 					}
 				],
 				"cdnEnablementMap": {
-					"worldDefault": {
-						"default": ["cdn1"]
-					},
+					"worldDefault": ["cdn1"],
 					"asnOverrides": {},
 					"continents": {}
 				},
@@ -257,9 +249,7 @@ func setupMockServer(t *testing.T) *httptest.Server {
 			// Get CDN enablement map
 			w.WriteHeader(http.StatusOK)
 			writeResponse(t, w, []byte(`{
-				"worldDefault": {
-					"default": ["cdn1", "cdn2"]
-				},
+				"worldDefault": ["cdn1", "cdn2"],
 				"asnOverrides": {
 					"12345": ["cdn1"]
 				},
@@ -429,7 +419,7 @@ func TestCRUDOperations(t *testing.T) {
 			},
 		},
 		CdnEnablementMap: CdnEnablementMap{
-			WorldDefault: map[string][]string{"default": {"cdn1"}},
+			WorldDefault: []string{"cdn1"},
 		},
 		TrafficDistribution: TrafficDistribution{
 			WorldDefault: &WorldDefault{
@@ -519,7 +509,7 @@ func TestGetCdnComponents(t *testing.T) {
 	if err != nil {
 		t.Errorf("GetCdnEnablementMap() error = %v", err)
 	}
-	if len(enablementMap.WorldDefault["default"]) == 0 {
+	if len(enablementMap.WorldDefault) == 0 {
 		t.Errorf("GetCdnEnablementMap() expected worldDefault, got none")
 	}
 	if len(enablementMap.Continents) == 0 {
