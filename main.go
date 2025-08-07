@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/constellix/terraform-provider-multicdn/provider"
+	"github.com/constellix/terraform-provider-constellix-multicdn/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 

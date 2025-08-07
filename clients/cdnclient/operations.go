@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient/response"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient/response"
 )
 
 // Client represents the CDN Configuration API client

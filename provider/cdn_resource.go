@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/cdnclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/cdnclient"
 )
 
 // Ensure resource implements required interfaces

@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/preferenceclient"
 )
 
 // Ensure resource implements required interfaces
