@@ -120,8 +120,8 @@ func NewCdnResource() resource.Resource {
 }
 
 // Metadata returns the resource metadata
-func (r *cdnResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_cdn_config"
+func (r *cdnResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "multicdn_cdn_config"
 }
 
 // Schema defines the schema for the resource

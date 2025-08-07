@@ -39,7 +39,7 @@ func (p *multiCDNProvider) Metadata(_ context.Context, _ provider.MetadataReques
 // Schema defines the provider-level schema for configuration data
 func (p *multiCDNProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Interact with MultiCDN API",
+		Description: "Provider for managing MultiCDN API resources, including CDN and preference configurations.",
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
 				Description: "API Key for MultiCDN API authentication",
@@ -53,7 +53,7 @@ func (p *multiCDNProvider) Schema(_ context.Context, _ provider.SchemaRequest, r
 			},
 			"base_url": schema.StringAttribute{
 				Description: "Base URL for MultiCDN API (optional)",
-				Optional:    true,
+				Required:    true,
 			},
 		},
 	}

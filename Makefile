@@ -29,4 +29,4 @@ clean:
 
 .PHONY: docs
 docs:
-	go generate ./...
+	./gendoc.sh
