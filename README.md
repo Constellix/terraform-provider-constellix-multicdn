@@ -18,7 +18,7 @@ Clone the repository and build the provider:
 
 ```shell
 git clone <repository-url>
-cd terraform-provider-multicdn
+cd terraform-provider-constellix-multicdn
 make build
 ```
 

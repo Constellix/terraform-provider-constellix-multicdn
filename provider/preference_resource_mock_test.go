@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
-	"github.com/constellix/terraform-provider-multicdn/provider"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 )

@@ -3,4 +3,4 @@ examples/**
 tests/**
 openapi/**
 
-terraform-provider-multicdn_v*
+terraform-provider-constellix-multicdn_v*

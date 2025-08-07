@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient"
 )
 
 // setupMockServer creates a test server that simulates the CDN Configuration API

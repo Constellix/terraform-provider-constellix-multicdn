@@ -1,9 +1,9 @@
 package provider
 
 import (
-	"github.com/constellix/terraform-provider-multicdn/clients/cdnclient"
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
-	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/cdnclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/preferenceclient"
 )
 
 // APIClient wraps the preference client

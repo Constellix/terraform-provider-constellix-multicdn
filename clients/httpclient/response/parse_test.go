@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient/response"
-	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient/response"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/preferenceclient"
 )
 
 func TestParseResponse(t *testing.T) {

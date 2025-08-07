@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/preferenceclient"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/constellix/terraform-provider-multicdn/clients/httpclient"
+	"github.com/constellix/terraform-provider-constellix-multicdn/clients/httpclient"
 )
 
 func TestGetPreferencesPage(t *testing.T) {

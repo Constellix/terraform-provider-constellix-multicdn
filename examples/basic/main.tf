@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     multicdn = {
-      source = "registry.terraform.io/constellix/multicdn"
+      source  = "constellix/constellix-multicdn"
       version = "0.0.1"
     }
   }
@@ -26,27 +26,27 @@ provider "multicdn" {
 
 # Create a CDN configuration resource
 resource "multicdn_cdn_config" "example_website" {
-  resource_id = 123456
+  resource_id  = 123456
   content_type = "website"
   description  = "Main website CDN configuration"
 
   cdns = [
     {
-      cdn_name     = "CloudFront"
-      description  = "AWS CloudFront CDN"
-      fqdn         = "d1234abcdef.cloudfront.net"
+      cdn_name      = "CloudFront5"
+      description   = "AWS CloudFront CDN"
+      fqdn          = "d1234abcdef.cloudfront.net"
       client_cdn_id = "CF12345"
     },
     {
-      cdn_name     = "Fastly"
-      description  = "Fastly CDN"
-      fqdn         = "example.global.fastly.net"
+      cdn_name      = "Fastly"
+      description   = "Fastly CDN"
+      fqdn          = "example.global.fastly.net"
       client_cdn_id = "FY67890"
     },
     {
-      cdn_name     = "Akamai"
-      description  = "Akamai CDN"
-      fqdn         = "example.akamaized.net"
+      cdn_name      = "Akamai"
+      description   = "Akamai CDN"
+      fqdn          = "example.akamaized.net"
       client_cdn_id = "AK54321"
     }
   ]
@@ -55,8 +55,8 @@ resource "multicdn_cdn_config" "example_website" {
   cdn_enablement_map = {
     world_default = ["AK54321", "FY67890", "CF12345"]
     asn_overrides = {
-        "AS12345" = ["AK54321", "CF12345"]
-        "AS67890" = ["FY67890"]
+      "AS12345" = ["AK54321", "CF12345"]
+      "AS67890" = ["FY67890"]
     }
     continents = {
       "NA" = {
@@ -93,7 +93,7 @@ resource "multicdn_cdn_config" "example_website" {
 
 # Create a preference resource
 resource "multicdn_preference_config" "example_website_preferences" {
-  resource_id = multicdn_cdn_config.example_website.resource_id
+  resource_id  = multicdn_cdn_config.example_website.resource_id
   content_type = "website"
   description  = "CDN preference settings for main website"
 
@@ -128,7 +128,7 @@ resource "multicdn_preference_config" "example_website_preferences" {
   }
 
   performance_filtering = {
-    world      = {
+    world = {
       mode               = "relative"
       relative_threshold = 0.32
     },
