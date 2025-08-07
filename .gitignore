@@ -1,0 +1,6 @@
+.idea
+examples/**
+tests/**
+openapi/**
+
+terraform-provider-multicdn_v*
