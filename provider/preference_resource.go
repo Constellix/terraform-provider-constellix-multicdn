@@ -86,8 +86,8 @@ func NewPreferenceResource() resource.Resource {
 }
 
 // Metadata returns the resource metadata
-func (r *preferenceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_preference_config"
+func (r *preferenceResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "multicdn_preference_config"
 }
 
 // Schema defines the schema for the resource
