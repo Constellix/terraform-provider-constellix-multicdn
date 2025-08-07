@@ -30,7 +30,7 @@ To install the provider for local development:
 make install
 ```
 
-This will build and install the provider to `~/.terraform.d/plugins/registry.terraform.io/constellix/multicdn/0.0.1/darwin_arm64/`.
+This will build and install the provider to `~/.terraform.d/plugins/registry.terraform.io/constellix/constellix-multicdn/0.0.1/darwin_arm64/`.
 
 ### Testing
 
