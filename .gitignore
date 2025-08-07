@@ -1,0 +1,4 @@
+.idea
+examples/**
+
+terraform-provider-multicdn_v*
