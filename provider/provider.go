@@ -16,8 +16,6 @@ var (
 	_ provider.Provider = &multiCDNProvider{}
 )
 
-const defaultAPIURL = "https://config.myserver.com"
-
 // multiCDNProvider is the provider implementation
 type multiCDNProvider struct{}
 
@@ -71,14 +69,18 @@ func (p *multiCDNProvider) Configure(ctx context.Context, req provider.Configure
 		return
 	}
 
-	// Default values
-	baseURL := defaultAPIURL
-	if !config.BaseURL.IsNull() {
-		baseURL = config.BaseURL.ValueString()
+	// Check for required configuration
+	if config.BaseURL.IsNull() || config.BaseURL.ValueString() == "" {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("base_url"),
+			"Missing Base URL",
+			"The provider cannot create the MultiCDN API client without the base URL",
+		)
+		return
 	}
 
 	// Check for required configuration
-	if config.APIKey.IsNull() {
+	if config.APIKey.IsNull() || config.APIKey.ValueString() == "" {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("api_key"),
 			"Missing API Key",
@@ -87,7 +89,7 @@ func (p *multiCDNProvider) Configure(ctx context.Context, req provider.Configure
 		return
 	}
 
-	if config.APISecret.IsNull() {
+	if config.APISecret.IsNull() || config.APISecret.ValueString() == "" {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("api_secret"),
 			"Missing API Secret",
@@ -98,7 +100,7 @@ func (p *multiCDNProvider) Configure(ctx context.Context, req provider.Configure
 
 	// Create the MultiCDN client
 	client := NewAPIClient(
-		baseURL,
+		config.BaseURL.ValueString(),
 		config.APIKey.ValueString(),
 		config.APISecret.ValueString(),
 	)
