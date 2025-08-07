@@ -32,7 +32,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/constellix/multicdn",
+		Address: "registry.terraform.io/constellix/constellix-multicdn",
 		Debug:   debug,
 	}
 
