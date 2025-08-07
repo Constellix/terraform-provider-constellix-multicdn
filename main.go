@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/constellix/terraform-provider-constellix-multicdn/provider"
@@ -10,9 +11,10 @@ import (
 )
 
 var (
-// these will be set by the goreleaser configuration
-// to appropriate values for the compiled binary.
-// version string = "dev"
+	// these will be set by the goreleaser configuration
+	// to appropriate values for the compiled binary.
+	version string = "dev"
+	commit  string = "none"
 )
 
 func main() {
@@ -20,6 +22,8 @@ func main() {
 
 	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
+
+	fmt.Printf("Version: %s, Commit: %s\n", version, commit)
 
 	opts := providerserver.ServeOpts{
 		Address: "registry.terraform.io/constellix/constellix-multicdn",
