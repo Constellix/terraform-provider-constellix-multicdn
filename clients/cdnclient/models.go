@@ -20,7 +20,7 @@ type CdnConfigurationPage struct {
 
 // CdnConfiguration represents a CDN configuration document
 type CdnConfiguration struct {
-	ResourceID          int                 `json:"resourceId"`
+	ResourceID          int64               `json:"resourceId"`
 	ContentType         *string             `json:"contentType,omitempty"`
 	Description         *string             `json:"description,omitempty"`
 	Version             *string             `json:"version,omitempty"`
@@ -33,8 +33,8 @@ type CdnConfiguration struct {
 // CdnConfigurationResponse represents a CDN configuration response from the API
 type CdnConfigurationResponse struct {
 	ID                  *string             `json:"id,omitempty"`
-	AccountID           *int                `json:"accountId,omitempty"`
-	ResourceID          int                 `json:"resourceId"`
+	AccountID           *int64              `json:"accountId,omitempty"`
+	ResourceID          int64               `json:"resourceId"`
 	ContentType         *string             `json:"contentType,omitempty"`
 	Description         *string             `json:"description,omitempty"`
 	Version             *string             `json:"version,omitempty"`
@@ -115,5 +115,5 @@ type TrafficOption struct {
 // DistributionEntry represents a single entry in a traffic distribution
 type DistributionEntry struct {
 	ID     string `json:"id"`
-	Weight *int   `json:"weight,omitempty"`
+	Weight *int64 `json:"weight,omitempty"`
 }

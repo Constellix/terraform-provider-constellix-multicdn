@@ -466,7 +466,7 @@ func (r *cdnResource) Read(ctx context.Context, req resource.ReadRequest, resp *
 	}
 
 	// Get the resource ID from state
-	resourceID := int(state.ResourceID.ValueInt64())
+	resourceID := state.ResourceID.ValueInt64()
 
 	// Call the API client to get the CDN configuration
 	config, err := r.client.cdn.GetCdnConfig(ctx, resourceID)
@@ -497,7 +497,7 @@ func (r *cdnResource) Update(ctx context.Context, req resource.UpdateRequest, re
 	}
 
 	// Get the resource ID from plan
-	resourceID := int(plan.ResourceID.ValueInt64())
+	resourceID := plan.ResourceID.ValueInt64()
 
 	// Convert Terraform model to API model
 	apiConfig := r.convertToAPIModel(&plan)
@@ -531,7 +531,7 @@ func (r *cdnResource) Delete(ctx context.Context, req resource.DeleteRequest, re
 	}
 
 	// Get the resource ID from state
-	resourceID := int(state.ResourceID.ValueInt64())
+	resourceID := state.ResourceID.ValueInt64()
 
 	// Call the API client to delete the CDN configuration
 	err := r.client.cdn.DeleteCdnConfig(ctx, resourceID)
@@ -563,7 +563,7 @@ func (r *cdnResource) ImportState(ctx context.Context, req resource.ImportStateR
 // Helper functions to convert between Terraform and API models
 func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.CdnConfiguration {
 	apiModel := &cdnclient.CdnConfiguration{
-		ResourceID: int(tfModel.ResourceID.ValueInt64()),
+		ResourceID: tfModel.ResourceID.ValueInt64(),
 	}
 
 	// Handle optional fields with pointers
@@ -738,7 +738,7 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 					}
 
 					if !tfDist.Weight.IsNull() {
-						weight := int(tfDist.Weight.ValueInt64())
+						weight := tfDist.Weight.ValueInt64()
 						apiDist.Weight = &weight
 					}
 
@@ -784,7 +784,7 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 							}
 
 							if !tfDist.Weight.IsNull() {
-								weight := int(tfDist.Weight.ValueInt64())
+								weight := tfDist.Weight.ValueInt64()
 								apiDist.Weight = &weight
 							}
 
@@ -831,7 +831,7 @@ func (r *cdnResource) convertToAPIModel(tfModel *cdnResourceModel) *cdnclient.Cd
 									}
 
 									if !tfDist.Weight.IsNull() {
-										weight := int(tfDist.Weight.ValueInt64())
+										weight := tfDist.Weight.ValueInt64()
 										apiDist.Weight = &weight
 									}
 

@@ -29,7 +29,7 @@ func TestParseResponse(t *testing.T) {
 		{
 			name:         "successful_parse_thresholds",
 			statusCode:   http.StatusOK,
-			responseBody: `{"world": 95.0, "continents": {"NA": {"default": 98.0}}}`,
+			responseBody: `{"world": 95, "continents": {"NA": {"default": 98}}}`,
 			targetStruct: &preferenceclient.AvailabilityThresholds{},
 			expectError:  false,
 		},
@@ -83,12 +83,12 @@ func TestParseResponse(t *testing.T) {
 						t.Errorf("Expected Description 'Test', got %s", v.Description)
 					}
 				case *preferenceclient.AvailabilityThresholds:
-					if v.World != 95.0 {
-						t.Errorf("Expected World 95.0, got %f", v.World)
+					if v.World != 95 {
+						t.Errorf("Expected World 95, got %d", v.World)
 					}
 					if continent, ok := v.Continents["NA"]; ok {
-						if continent.Default != 98.0 {
-							t.Errorf("Expected NA default 98.0, got %f", continent.Default)
+						if continent.Default != 98 {
+							t.Errorf("Expected NA default 98, got %d", continent.Default)
 						}
 					} else {
 						t.Error("Expected continent 'NA' but not found")

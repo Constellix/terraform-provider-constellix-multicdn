@@ -11,7 +11,7 @@ import (
 )
 
 // Test helper functions
-func testAccCheckCdnConfigExists(resourceID int, configs map[int]*cdnclient.CdnConfigurationResponse) resource.TestCheckFunc {
+func testAccCheckCdnConfigExists(resourceID int64, configs map[int64]*cdnclient.CdnConfigurationResponse) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if _, exists := configs[resourceID]; !exists {
 			return fmt.Errorf("CDN configuration with ID %d does not exist", resourceID)
@@ -20,14 +20,14 @@ func testAccCheckCdnConfigExists(resourceID int, configs map[int]*cdnclient.CdnC
 	}
 }
 
-func testAccCheckCdnConfigDescription(resourceID int, expectedDesc string, configs map[int]*cdnclient.CdnConfigurationResponse) resource.TestCheckFunc {
+func testAccCheckCdnConfigDescription(resourceID int64, expectedDesc string, configs map[int64]*cdnclient.CdnConfigurationResponse) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		config, exists := configs[resourceID]
 		if !exists {
 			return fmt.Errorf("CDN configuration with ID %d does not exist", resourceID)
 		}
 		if config.Description == nil || *config.Description != expectedDesc {
-			return fmt.Errorf("Expected description '%s', got '%s'", expectedDesc, *config.Description)
+			return fmt.Errorf("expected description '%s', got '%s'", expectedDesc, *config.Description)
 		}
 		return nil
 	}

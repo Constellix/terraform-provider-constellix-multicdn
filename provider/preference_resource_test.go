@@ -2,34 +2,13 @@ package provider_test
 
 import (
 	"fmt"
-	"net/http/httptest"
 	"regexp"
 	"testing"
 
 	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
-	"github.com/constellix/terraform-provider-multicdn/provider"
-
-	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
-
-// testAccProtoV6ProviderFactories creates provider factories with a mock server
-func setupAccProtoV6ProviderFactories() (*httptest.Server, map[int]*preferenceclient.Preference, map[string]func() (tfprotov6.ProviderServer, error)) {
-	// Create the mock server
-	mockServer, mockPreferences := setupMockPreferenceServer()
-
-	// Create provider factories using the mock server URL
-	factories := map[string]func() (tfprotov6.ProviderServer, error){
-		"multicdn": func() (tfprotov6.ProviderServer, error) {
-			testProvider := provider.New()
-			return providerserver.NewProtocol6(testProvider)(), nil
-		},
-	}
-
-	return mockServer, mockPreferences, factories
-}
 
 // Basic acceptance test for preference resource
 func TestAccPreferenceResource_basic(t *testing.T) {
@@ -242,7 +221,7 @@ func testAccCheckPreferenceResourceExists(resourceName string, resourceID *strin
 }
 
 // Helper function to verify preference exists in mock store
-func testAccCheckPreferenceExists(resourceID int, mockPreferences map[int]*preferenceclient.Preference) resource.TestCheckFunc {
+func testAccCheckPreferenceExists(resourceID int64, mockPreferences map[int64]*preferenceclient.Preference) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if pref, exists := mockPreferences[resourceID]; !exists {
 			return fmt.Errorf("preference with ID %d does not exist in mock store", resourceID)
@@ -254,7 +233,7 @@ func testAccCheckPreferenceExists(resourceID int, mockPreferences map[int]*prefe
 }
 
 // Helper function to verify description was updated
-func testAccCheckPreferenceDescription(resourceID int, expected string, mockPreferences map[int]*preferenceclient.Preference) resource.TestCheckFunc {
+func testAccCheckPreferenceDescription(resourceID int64, expected string, mockPreferences map[int64]*preferenceclient.Preference) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		pref, exists := mockPreferences[resourceID]
 		if !exists {
@@ -268,14 +247,14 @@ func testAccCheckPreferenceDescription(resourceID int, expected string, mockPref
 }
 
 // Helper function to verify world threshold was updated
-func testAccCheckPreferenceWorld(resourceID int, expected float64, mockPreferences map[int]*preferenceclient.Preference) resource.TestCheckFunc {
+func testAccCheckPreferenceWorld(resourceID int64, expected int64, mockPreferences map[int64]*preferenceclient.Preference) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		pref, exists := mockPreferences[resourceID]
 		if !exists {
 			return fmt.Errorf("preference with ID %d does not exist in mock store", resourceID)
 		}
 		if pref.AvailabilityThresholds.World != expected {
-			return fmt.Errorf("preference world threshold is %f, expected %f",
+			return fmt.Errorf("preference world threshold is %d, expected %d",
 				pref.AvailabilityThresholds.World, expected)
 		}
 		return nil
@@ -283,7 +262,7 @@ func testAccCheckPreferenceWorld(resourceID int, expected float64, mockPreferenc
 }
 
 // Helper to check that the resource is destroyed
-func testAccCheckPreferenceDestroyed(mockPreferences map[int]*preferenceclient.Preference) resource.TestCheckFunc {
+func testAccCheckPreferenceDestroyed(mockPreferences map[int64]*preferenceclient.Preference) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if pref, exists := mockPreferences[12345]; exists {
 			return fmt.Errorf("preference with ID 12345 still exists after destroy: %v", pref)
@@ -596,7 +575,7 @@ resource "multicdn_preference" "comprehensive" {
         }
       }
       "AS" = {
-        default = 91  // Changed from 96.0
+        default = 91  // Changed from 96
         countries = {
           "JP" = 90   // Changed from 97
           "CN" = 91   // Changed from 96
@@ -695,7 +674,7 @@ resource "multicdn_preference" "minimal" {
   
   // Minimal availability thresholds
   availability_thresholds = {
-    world = 95.0
+    world = 95
   }
   
   // Minimal performance filtering

@@ -9,12 +9,15 @@ import (
 	"strconv"
 
 	"github.com/constellix/terraform-provider-multicdn/clients/preferenceclient"
+	"github.com/constellix/terraform-provider-multicdn/provider"
+	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 )
 
 // setupMockPreferenceServer creates a mock HTTP server that simulates the CDN Preference API
-func setupMockPreferenceServer() (*httptest.Server, map[int]*preferenceclient.Preference) {
+func setupMockPreferenceServer() (*httptest.Server, map[int64]*preferenceclient.Preference) {
 	// Store for preference resources, keyed by resourceID
-	preferences := make(map[int]*preferenceclient.Preference)
+	preferences := make(map[int64]*preferenceclient.Preference)
 
 	// Set up the mock server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +49,8 @@ func setupMockPreferenceServer() (*httptest.Server, map[int]*preferenceclient.Pr
 		// Path with resource ID: /preference/{resourceId}
 		resourcePathRegex := regexp.MustCompile(`^/preference/(\d+)$`)
 		if matches := resourcePathRegex.FindStringSubmatch(r.URL.Path); len(matches) > 1 {
-			resourceID, _ := strconv.Atoi(matches[1])
+			resourceIDInt, _ := strconv.Atoi(matches[1])
+			resourceID := int64(resourceIDInt)
 
 			// GET /preference/{resourceId}
 			if r.Method == http.MethodGet {
@@ -73,19 +77,22 @@ func setupMockPreferenceServer() (*httptest.Server, map[int]*preferenceclient.Pr
 		countriesRegex := regexp.MustCompile(`^/preference/(\d+)/enabledSubdivisionCountries$`)
 
 		if matches := thresholdsRegex.FindStringSubmatch(r.URL.Path); len(matches) > 1 && r.Method == http.MethodGet {
-			resourceID, _ := strconv.Atoi(matches[1])
+			resourceIDInt, _ := strconv.Atoi(matches[1])
+			resourceID := int64(resourceIDInt)
 			handleGetAvailabilityThresholds(w, r, preferences, resourceID)
 			return
 		}
 
 		if matches := performanceRegex.FindStringSubmatch(r.URL.Path); len(matches) > 1 && r.Method == http.MethodGet {
-			resourceID, _ := strconv.Atoi(matches[1])
+			resourceIDInt, _ := strconv.Atoi(matches[1])
+			resourceID := int64(resourceIDInt)
 			handleGetPerformanceFiltering(w, r, preferences, resourceID)
 			return
 		}
 
 		if matches := countriesRegex.FindStringSubmatch(r.URL.Path); len(matches) > 1 && r.Method == http.MethodGet {
-			resourceID, _ := strconv.Atoi(matches[1])
+			resourceIDInt, _ := strconv.Atoi(matches[1])
+			resourceID := int64(resourceIDInt)
 			handleGetEnabledSubdivisionCountries(w, r, preferences, resourceID)
 			return
 		}
@@ -103,7 +110,7 @@ func setupMockPreferenceServer() (*httptest.Server, map[int]*preferenceclient.Pr
 }
 
 // Handler for GET /preference
-func handleListPreferences(w http.ResponseWriter, r *http.Request, preferences map[int]*preferenceclient.Preference) {
+func handleListPreferences(w http.ResponseWriter, r *http.Request, preferences map[int64]*preferenceclient.Preference) {
 	// Extract pagination parameters
 	pageStr := r.URL.Query().Get("page")
 	sizeStr := r.URL.Query().Get("size")
@@ -177,7 +184,7 @@ func dereferencePreferences(prefs []*preferenceclient.Preference) []preferencecl
 }
 
 // Handler for POST /preference
-func handleCreatePreference(w http.ResponseWriter, r *http.Request, preferences map[int]*preferenceclient.Preference) {
+func handleCreatePreference(w http.ResponseWriter, r *http.Request, preferences map[int64]*preferenceclient.Preference) {
 	var preference preferenceclient.Preference
 
 	err := json.NewDecoder(r.Body).Decode(&preference)
@@ -220,7 +227,7 @@ func handleCreatePreference(w http.ResponseWriter, r *http.Request, preferences 
 }
 
 // Handler for GET /preference/{resourceId}
-func handleGetPreference(w http.ResponseWriter, _ *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleGetPreference(w http.ResponseWriter, _ *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	preference, exists := preferences[resourceID]
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
@@ -242,7 +249,7 @@ func handleGetPreference(w http.ResponseWriter, _ *http.Request, preferences map
 }
 
 // Handler for PUT /preference/{resourceId}
-func handleUpdatePreference(w http.ResponseWriter, r *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleUpdatePreference(w http.ResponseWriter, r *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	// Check if resource exists
 	_, exists := preferences[resourceID]
 	if !exists {
@@ -285,7 +292,7 @@ func handleUpdatePreference(w http.ResponseWriter, r *http.Request, preferences 
 }
 
 // Handler for DELETE /preference/{resourceId}
-func handleDeletePreference(w http.ResponseWriter, _ *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleDeletePreference(w http.ResponseWriter, _ *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	_, exists := preferences[resourceID]
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
@@ -304,7 +311,7 @@ func handleDeletePreference(w http.ResponseWriter, _ *http.Request, preferences 
 }
 
 // Handler for GET /preference/{resourceId}/availabilityThresholds
-func handleGetAvailabilityThresholds(w http.ResponseWriter, _ *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleGetAvailabilityThresholds(w http.ResponseWriter, _ *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	preference, exists := preferences[resourceID]
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
@@ -326,7 +333,7 @@ func handleGetAvailabilityThresholds(w http.ResponseWriter, _ *http.Request, pre
 }
 
 // Handler for GET /preference/{resourceId}/performanceFiltering
-func handleGetPerformanceFiltering(w http.ResponseWriter, _ *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleGetPerformanceFiltering(w http.ResponseWriter, _ *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	preference, exists := preferences[resourceID]
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
@@ -348,7 +355,7 @@ func handleGetPerformanceFiltering(w http.ResponseWriter, _ *http.Request, prefe
 }
 
 // Handler for GET /preference/{resourceId}/enabledSubdivisionCountries
-func handleGetEnabledSubdivisionCountries(w http.ResponseWriter, _ *http.Request, preferences map[int]*preferenceclient.Preference, resourceID int) {
+func handleGetEnabledSubdivisionCountries(w http.ResponseWriter, _ *http.Request, preferences map[int64]*preferenceclient.Preference, resourceID int64) {
 	preference, exists := preferences[resourceID]
 	if !exists {
 		w.WriteHeader(http.StatusNotFound)
@@ -367,4 +374,20 @@ func handleGetEnabledSubdivisionCountries(w http.ResponseWriter, _ *http.Request
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+}
+
+// testAccProtoV6ProviderFactories creates provider factories with a mock server
+func setupAccProtoV6ProviderFactories() (*httptest.Server, map[int64]*preferenceclient.Preference, map[string]func() (tfprotov6.ProviderServer, error)) {
+	// Create the mock server
+	mockServer, mockPreferences := setupMockPreferenceServer()
+
+	// Create provider factories using the mock server URL
+	factories := map[string]func() (tfprotov6.ProviderServer, error){
+		"multicdn": func() (tfprotov6.ProviderServer, error) {
+			testProvider := provider.New()
+			return providerserver.NewProtocol6(testProvider)(), nil
+		},
+	}
+
+	return mockServer, mockPreferences, factories
 }

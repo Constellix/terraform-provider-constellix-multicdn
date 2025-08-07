@@ -414,7 +414,7 @@ func TestCRUDOperations(t *testing.T) {
 	description := "Test CDN config"
 	cdnDescription := "CDN Provider 1"
 	equalWeight := false
-	weight := 100
+	var weight int64 = 100
 
 	config := &CdnConfiguration{
 		ResourceID:  123,

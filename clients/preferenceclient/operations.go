@@ -50,7 +50,7 @@ func (c *Client) CreatePreference(ctx context.Context, preference *Preference) e
 }
 
 // GetPreference gets a specific CDN configuration by resourceId
-func (c *Client) GetPreference(ctx context.Context, resourceID int) (*Preference, error) {
+func (c *Client) GetPreference(ctx context.Context, resourceID int64) (*Preference, error) {
 	path := fmt.Sprintf("/preference/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -66,7 +66,7 @@ func (c *Client) GetPreference(ctx context.Context, resourceID int) (*Preference
 }
 
 // UpdatePreference updates an existing configuration by resourceId
-func (c *Client) UpdatePreference(ctx context.Context, resourceID int, preference *Preference) error {
+func (c *Client) UpdatePreference(ctx context.Context, resourceID int64, preference *Preference) error {
 	path := fmt.Sprintf("/preference/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodPut, path, preference)
 	if err != nil {
@@ -77,7 +77,7 @@ func (c *Client) UpdatePreference(ctx context.Context, resourceID int, preferenc
 }
 
 // DeletePreference deletes a configuration by resourceId
-func (c *Client) DeletePreference(ctx context.Context, resourceID int) error {
+func (c *Client) DeletePreference(ctx context.Context, resourceID int64) error {
 	path := fmt.Sprintf("/preference/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodDelete, path, nil)
 	if err != nil {
@@ -88,7 +88,7 @@ func (c *Client) DeletePreference(ctx context.Context, resourceID int) error {
 }
 
 // GetAvailabilityThresholds gets availability thresholds for a specific resourceId
-func (c *Client) GetAvailabilityThresholds(ctx context.Context, resourceID int) (*AvailabilityThresholds, error) {
+func (c *Client) GetAvailabilityThresholds(ctx context.Context, resourceID int64) (*AvailabilityThresholds, error) {
 	path := fmt.Sprintf("/preference/%d/availabilityThresholds", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -104,7 +104,7 @@ func (c *Client) GetAvailabilityThresholds(ctx context.Context, resourceID int) 
 }
 
 // GetPerformanceFiltering gets performance filtering config for a specific resourceId
-func (c *Client) GetPerformanceFiltering(ctx context.Context, resourceID int) (*PerformanceFiltering, error) {
+func (c *Client) GetPerformanceFiltering(ctx context.Context, resourceID int64) (*PerformanceFiltering, error) {
 	path := fmt.Sprintf("/preference/%d/performanceFiltering", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -120,7 +120,7 @@ func (c *Client) GetPerformanceFiltering(ctx context.Context, resourceID int) (*
 }
 
 // GetEnabledSubdivisionCountries gets enabled subdivisions countries for a specific resourceId
-func (c *Client) GetEnabledSubdivisionCountries(ctx context.Context, resourceID int) (*EnabledSubdivisionCountries, error) {
+func (c *Client) GetEnabledSubdivisionCountries(ctx context.Context, resourceID int64) (*EnabledSubdivisionCountries, error) {
 	path := fmt.Sprintf("/preference/%d/enabledSubdivisionCountries", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {

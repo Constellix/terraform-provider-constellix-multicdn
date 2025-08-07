@@ -56,7 +56,7 @@ func (c *Client) CreateCdnConfig(ctx context.Context, config *CdnConfiguration) 
 }
 
 // GetCdnConfig gets a specific CDN configuration by resourceId
-func (c *Client) GetCdnConfig(ctx context.Context, resourceID int) (*CdnConfigurationResponse, error) {
+func (c *Client) GetCdnConfig(ctx context.Context, resourceID int64) (*CdnConfigurationResponse, error) {
 	path := fmt.Sprintf("/cdn-configs/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -72,7 +72,7 @@ func (c *Client) GetCdnConfig(ctx context.Context, resourceID int) (*CdnConfigur
 }
 
 // UpdateCdnConfig updates an existing CDN configuration by resourceId
-func (c *Client) UpdateCdnConfig(ctx context.Context, resourceID int, config *CdnConfiguration) (*CdnConfigurationResponse, error) {
+func (c *Client) UpdateCdnConfig(ctx context.Context, resourceID int64, config *CdnConfiguration) (*CdnConfigurationResponse, error) {
 	path := fmt.Sprintf("/cdn-configs/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodPut, path, config)
 	if err != nil {
@@ -88,7 +88,7 @@ func (c *Client) UpdateCdnConfig(ctx context.Context, resourceID int, config *Cd
 }
 
 // DeleteCdnConfig deletes a CDN configuration by resourceId
-func (c *Client) DeleteCdnConfig(ctx context.Context, resourceID int) error {
+func (c *Client) DeleteCdnConfig(ctx context.Context, resourceID int64) error {
 	path := fmt.Sprintf("/cdn-configs/%d", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodDelete, path, nil)
 	if err != nil {
@@ -99,7 +99,7 @@ func (c *Client) DeleteCdnConfig(ctx context.Context, resourceID int) error {
 }
 
 // GetCdnEntries gets the CDN provider registry for a specific resourceId
-func (c *Client) GetCdnEntries(ctx context.Context, resourceID int) ([]CdnEntry, error) {
+func (c *Client) GetCdnEntries(ctx context.Context, resourceID int64) ([]CdnEntry, error) {
 	path := fmt.Sprintf("/cdn-configs/%d/cdns", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -115,7 +115,7 @@ func (c *Client) GetCdnEntries(ctx context.Context, resourceID int) ([]CdnEntry,
 }
 
 // GetCdnEnablementMap gets the CDN enablement map for a specific resourceId
-func (c *Client) GetCdnEnablementMap(ctx context.Context, resourceID int) (*CdnEnablementMap, error) {
+func (c *Client) GetCdnEnablementMap(ctx context.Context, resourceID int64) (*CdnEnablementMap, error) {
 	path := fmt.Sprintf("/cdn-configs/%d/enablement", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {
@@ -131,7 +131,7 @@ func (c *Client) GetCdnEnablementMap(ctx context.Context, resourceID int) (*CdnE
 }
 
 // GetTrafficDistribution gets the traffic distribution rules for a specific resourceId
-func (c *Client) GetTrafficDistribution(ctx context.Context, resourceID int) (*TrafficDistribution, error) {
+func (c *Client) GetTrafficDistribution(ctx context.Context, resourceID int64) (*TrafficDistribution, error) {
 	path := fmt.Sprintf("/cdn-configs/%d/trafficDistribution", resourceID)
 	resp, err := c.MakeRequest(ctx, http.MethodGet, path, nil)
 	if err != nil {

@@ -17,7 +17,7 @@ type PreferencePage struct {
 
 // Preference represents the complete CDN preference configuration
 type Preference struct {
-	ResourceID                  int                         `json:"resourceId"`
+	ResourceID                  int64                       `json:"resourceId"`
 	ContentType                 string                      `json:"contentType,omitempty"`
 	Description                 string                      `json:"description,omitempty"`
 	Version                     string                      `json:"version,omitempty"`
@@ -29,14 +29,14 @@ type Preference struct {
 
 // AvailabilityThresholds represents the thresholds for availability
 type AvailabilityThresholds struct {
-	World      float64                       `json:"world,omitempty"`
+	World      int64                         `json:"world,omitempty"` // range 0-100
 	Continents map[string]ContinentThreshold `json:"continents,omitempty"`
 }
 
 // ContinentThreshold represents availability thresholds for a continent
 type ContinentThreshold struct {
-	Default   float64            `json:"default,omitempty"`
-	Countries map[string]float64 `json:"countries,omitempty"`
+	Default   int64            `json:"default,omitempty"`   // range 0-100
+	Countries map[string]int64 `json:"countries,omitempty"` // range 0-100
 }
 
 // PerformanceFiltering represents the performance filtering configuration
@@ -47,14 +47,14 @@ type PerformanceFiltering struct {
 
 // PerformanceConfig represents a performance filtering configuration
 type PerformanceConfig struct {
-	Mode              string  `json:"mode,omitempty"` // Either "relative" or "absolute"
-	RelativeThreshold float64 `json:"relativeThreshold,omitempty"`
+	Mode              string  `json:"mode,omitempty"`              // Either "relative" or "absolute"
+	RelativeThreshold float64 `json:"relativeThreshold,omitempty"` // range 0.0-1.0
 }
 
 // ContinentPerformanceConfig represents performance configuration for a continent
 type ContinentPerformanceConfig struct {
 	Mode              string                       `json:"mode,omitempty"`
-	RelativeThreshold float64                      `json:"relativeThreshold,omitempty"`
+	RelativeThreshold float64                      `json:"relativeThreshold,omitempty"` // range 0.0-1.0
 	Countries         map[string]PerformanceConfig `json:"countries,omitempty"`
 }
 

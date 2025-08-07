@@ -35,12 +35,12 @@ func TestGetPreferencesPage(t *testing.T) {
 						"version": "1.0",
 						"lastUpdated": "2023-01-01T00:00:00Z",
 						"availabilityThresholds": {
-							"world": 95.0,
+							"world": 95,
 							"continents": {
 								"NA": {
-									"default": 98.0,
+									"default": 98,
 									"countries": {
-										"US": 99.0
+										"US": 99
 									}
 								}
 							}
@@ -48,7 +48,7 @@ func TestGetPreferencesPage(t *testing.T) {
 						"performanceFiltering": {
 							"world": {
 								"mode": "relative",
-								"relativeThreshold": 1.2
+								"relativeThreshold": 0.2
 							}
 						},
 						"enabledSubdivisionCountries": {
@@ -156,12 +156,12 @@ func TestCreatePreference(t *testing.T) {
 				ContentType: "application/json",
 				Description: "Test preference",
 				AvailabilityThresholds: AvailabilityThresholds{
-					World: 95.0,
+					World: 95,
 					Continents: map[string]ContinentThreshold{
 						"NA": {
-							Default: 98.0,
-							Countries: map[string]float64{
-								"US": 99.0,
+							Default: 98,
+							Countries: map[string]int64{
+								"US": 99,
 							},
 						},
 					},
@@ -169,7 +169,7 @@ func TestCreatePreference(t *testing.T) {
 				PerformanceFiltering: PerformanceFiltering{
 					World: PerformanceConfig{
 						Mode:              "relative",
-						RelativeThreshold: 1.2,
+						RelativeThreshold: 0.2,
 					},
 				},
 				EnabledSubdivisionCountries: EnabledSubdivisionCountries{
@@ -247,7 +247,7 @@ func TestGetPreference(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		response   string
 		statusCode int
 		expectErr  bool
@@ -263,12 +263,12 @@ func TestGetPreference(t *testing.T) {
 				"version": "1.0",
 				"lastUpdated": "2023-01-01T00:00:00Z",
 				"availabilityThresholds": {
-					"world": 95.0,
+					"world": 95,
 					"continents": {
 						"NA": {
-							"default": 98.0,
+							"default": 98,
 							"countries": {
-								"US": 99.0
+								"US": 99
 							}
 						}
 					}
@@ -276,7 +276,7 @@ func TestGetPreference(t *testing.T) {
 				"performanceFiltering": {
 					"world": {
 						"mode": "relative",
-						"relativeThreshold": 1.2
+						"relativeThreshold": 0.2
 					}
 				},
 				"enabledSubdivisionCountries": {
@@ -306,7 +306,7 @@ func TestGetPreference(t *testing.T) {
 				if r.Method != http.MethodGet {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID)
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID))
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}
@@ -349,7 +349,7 @@ func TestUpdatePreference(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		preference Preference
 		statusCode int
 		expectErr  bool
@@ -362,7 +362,7 @@ func TestUpdatePreference(t *testing.T) {
 				ContentType: "application/json",
 				Description: "Updated preference",
 				AvailabilityThresholds: AvailabilityThresholds{
-					World: 96.0,
+					World: 96,
 				},
 				PerformanceFiltering: PerformanceFiltering{
 					World: PerformanceConfig{
@@ -394,7 +394,7 @@ func TestUpdatePreference(t *testing.T) {
 				if r.Method != http.MethodPut {
 					t.Errorf("Expected PUT method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID)
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID))
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}
@@ -437,7 +437,7 @@ func TestDeletePreference(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		statusCode int
 		expectErr  bool
 	}{
@@ -463,7 +463,7 @@ func TestDeletePreference(t *testing.T) {
 				if r.Method != http.MethodDelete {
 					t.Errorf("Expected DELETE method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID)
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID))
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}
@@ -494,7 +494,7 @@ func TestGetAvailabilityThresholds(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		response   string
 		statusCode int
 		expectErr  bool
@@ -504,13 +504,13 @@ func TestGetAvailabilityThresholds(t *testing.T) {
 			resourceID: 123,
 			statusCode: http.StatusOK,
 			response: `{
-				"world": 95.0,
+				"world": 95,
 				"continents": {
 					"NA": {
-						"default": 98.0,
+						"default": 98,
 						"countries": {
-							"US": 99.0,
-							"CA": 97.5
+							"US": 99,
+							"CA": 97
 						}
 					}
 				}
@@ -534,7 +534,7 @@ func TestGetAvailabilityThresholds(t *testing.T) {
 				if r.Method != http.MethodGet {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID) + "/availabilityThresholds"
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID)) + "/availabilityThresholds"
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}
@@ -563,15 +563,15 @@ func TestGetAvailabilityThresholds(t *testing.T) {
 			if !tc.expectErr && thresholds != nil {
 				// Validate response data
 				if thresholds.World != 95.0 {
-					t.Errorf("Expected world threshold 95.0, got %f", thresholds.World)
+					t.Errorf("Expected world threshold 95, got %d", thresholds.World)
 				}
 				if continent, ok := thresholds.Continents["NA"]; ok {
 					if continent.Default != 98.0 {
-						t.Errorf("Expected NA default threshold 98.0, got %f", continent.Default)
+						t.Errorf("Expected NA default threshold 98, got %d", continent.Default)
 					}
 					if country, ok := continent.Countries["US"]; ok {
-						if country != 99.0 {
-							t.Errorf("Expected US threshold 99.0, got %f", country)
+						if country != 99 {
+							t.Errorf("Expected US threshold 99, got %d", country)
 						}
 					} else {
 						t.Error("Expected US country threshold but found none")
@@ -588,7 +588,7 @@ func TestGetPerformanceFiltering(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		response   string
 		statusCode int
 		expectErr  bool
@@ -600,16 +600,16 @@ func TestGetPerformanceFiltering(t *testing.T) {
 			response: `{
 				"world": {
 					"mode": "relative",
-					"relativeThreshold": 1.2
+					"relativeThreshold": 0.2
 				},
 				"continents": {
 					"EU": {
 						"mode": "relative",
-						"relativeThreshold": 1.1,
+						"relativeThreshold": 0.11,
 						"countries": {
 							"DE": {
 								"mode": "relative",
-								"relativeThreshold": 1.05
+								"relativeThreshold": 0.05
 							}
 						}
 					}
@@ -634,7 +634,7 @@ func TestGetPerformanceFiltering(t *testing.T) {
 				if r.Method != http.MethodGet {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID) + "/performanceFiltering"
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID)) + "/performanceFiltering"
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}
@@ -665,16 +665,16 @@ func TestGetPerformanceFiltering(t *testing.T) {
 				if filtering.World.Mode != "relative" {
 					t.Errorf("Expected world mode 'relative', got %s", filtering.World.Mode)
 				}
-				if filtering.World.RelativeThreshold != 1.2 {
-					t.Errorf("Expected world threshold 1.2, got %f", filtering.World.RelativeThreshold)
+				if filtering.World.RelativeThreshold != 0.2 {
+					t.Errorf("Expected world threshold 0.2, got %f", filtering.World.RelativeThreshold)
 				}
 				if continent, ok := filtering.Continents["EU"]; ok {
 					if continent.Mode != "relative" {
 						t.Errorf("Expected EU mode 'relative', got %s", continent.Mode)
 					}
 					if country, ok := continent.Countries["DE"]; ok {
-						if country.RelativeThreshold != 1.05 {
-							t.Errorf("Expected DE threshold 1.05, got %f", country.RelativeThreshold)
+						if country.RelativeThreshold != 0.05 {
+							t.Errorf("Expected DE threshold 0.05, got %f", country.RelativeThreshold)
 						}
 					} else {
 						t.Error("Expected DE country configuration but found none")
@@ -691,7 +691,7 @@ func TestGetEnabledSubdivisionCountries(t *testing.T) {
 	// Setup test cases
 	tests := []struct {
 		name       string
-		resourceID int
+		resourceID int64
 		response   string
 		statusCode int
 		expectErr  bool
@@ -729,7 +729,7 @@ func TestGetEnabledSubdivisionCountries(t *testing.T) {
 				if r.Method != http.MethodGet {
 					t.Errorf("Expected GET method, got %s", r.Method)
 				}
-				expectedPath := "/preference/" + strconv.Itoa(tc.resourceID) + "/enabledSubdivisionCountries"
+				expectedPath := "/preference/" + strconv.Itoa(int(tc.resourceID)) + "/enabledSubdivisionCountries"
 				if r.URL.Path != expectedPath {
 					t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 				}

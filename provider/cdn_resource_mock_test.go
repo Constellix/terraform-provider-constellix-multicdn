@@ -14,9 +14,9 @@ import (
 )
 
 // setupMockCdnServer creates a mock HTTP server for CDN config tests
-func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfigurationResponse) {
+func setupMockCdnServer() (*httptest.Server, map[int64]*cdnclient.CdnConfigurationResponse) {
 	// Map to store configurations by resource ID
-	mockCdnConfigs := make(map[int]*cdnclient.CdnConfigurationResponse)
+	mockCdnConfigs := make(map[int64]*cdnclient.CdnConfigurationResponse)
 
 	// Create a mock HTTP server
 	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +84,7 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 
 			// Create a new configuration response
 			id := "12345-abcde-67890"
-			accountId := 1001
+			var accountId int64 = 1001
 
 			configResponse := &cdnclient.CdnConfigurationResponse{
 				ID:                  &id,
@@ -114,11 +114,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(pathParts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			config, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -136,11 +137,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(pathParts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			_, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -186,11 +188,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(pathParts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			_, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -212,11 +215,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(parts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			config, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -235,11 +239,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(parts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			config, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -258,11 +263,12 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 				return
 			}
 
-			resourceID, err := strconv.Atoi(parts[2])
+			resourceIDInt, err := strconv.Atoi(pathParts[2])
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+			resourceID := int64(resourceIDInt)
 
 			config, exists := mockCdnConfigs[resourceID]
 			if !exists {
@@ -282,7 +288,7 @@ func setupMockCdnServer() (*httptest.Server, map[int]*cdnclient.CdnConfiguration
 }
 
 // setupAccProtoV6ProviderFactories creates provider factories with a mock server
-func setupCdnAccProtoV6ProviderFactories() (*httptest.Server, map[int]*cdnclient.CdnConfigurationResponse, map[string]func() (tfprotov6.ProviderServer, error)) {
+func setupCdnAccProtoV6ProviderFactories() (*httptest.Server, map[int64]*cdnclient.CdnConfigurationResponse, map[string]func() (tfprotov6.ProviderServer, error)) {
 	// Create the mock server
 	mockServer, mockCdnConfigs := setupMockCdnServer()
 

@@ -41,14 +41,14 @@ type preferenceResourceModel struct {
 
 // availabilityThresholdsModel maps the AvailabilityThresholds schema
 type availabilityThresholdsModel struct {
-	World      types.Float64                       `tfsdk:"world"`
+	World      types.Int64                         `tfsdk:"world"`
 	Continents map[string]*continentThresholdModel `tfsdk:"continents"`
 }
 
 // continentThresholdModel maps the ContinentThreshold schema
 type continentThresholdModel struct {
-	Default   types.Float64            `tfsdk:"default"`
-	Countries map[string]types.Float64 `tfsdk:"countries"`
+	Default   types.Int64            `tfsdk:"default"`
+	Countries map[string]types.Int64 `tfsdk:"countries"`
 }
 
 // performanceFilteringModel maps the PerformanceFiltering schema
@@ -122,8 +122,8 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Availability thresholds configuration",
 				Required:    true,
 				Attributes: map[string]schema.Attribute{
-					"world": schema.Float64Attribute{
-						Description: "Global availability threshold",
+					"world": schema.Int64Attribute{
+						Description: "Global availability threshold (0-100)",
 						Optional:    true,
 					},
 					"continents": schema.MapNestedAttribute{
@@ -131,14 +131,14 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 						Optional:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
-								"default": schema.Float64Attribute{
-									Description: "Default threshold for the continent",
+								"default": schema.Int64Attribute{
+									Description: "Default threshold for the continent (0-100)",
 									Required:    true,
 								},
 								"countries": schema.MapAttribute{
-									Description: "Country-specific thresholds",
+									Description: "Country-specific thresholds (0-100)",
 									Optional:    true,
-									ElementType: types.Float64Type,
+									ElementType: types.Int64Type,
 								},
 							},
 						},
@@ -262,7 +262,7 @@ func (r *preferenceResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	// Fetch the created resource to get all properties including computed ones
-	apiPreference, err = r.client.preference.GetPreference(ctx, int(plan.ResourceID.ValueInt64()))
+	apiPreference, err = r.client.preference.GetPreference(ctx, plan.ResourceID.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Preference After Create",
@@ -290,7 +290,7 @@ func (r *preferenceResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	// Get the resource ID from state
-	resourceID := int(state.ResourceID.ValueInt64())
+	resourceID := state.ResourceID.ValueInt64()
 
 	// Call the API client to get the preference
 	preference, err := r.client.preference.GetPreference(ctx, resourceID)
@@ -321,7 +321,7 @@ func (r *preferenceResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	// Get the resource ID from plan
-	resourceID := int(plan.ResourceID.ValueInt64())
+	resourceID := plan.ResourceID.ValueInt64()
 
 	// Convert Terraform model to API model
 	apiPreference := r.convertToAPIModel(&plan)
@@ -365,7 +365,7 @@ func (r *preferenceResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	// Get the resource ID from state
-	resourceID := int(state.ResourceID.ValueInt64())
+	resourceID := state.ResourceID.ValueInt64()
 
 	// Call the API client to delete the preference
 	err := r.client.preference.DeletePreference(ctx, resourceID)
@@ -397,7 +397,7 @@ func (r *preferenceResource) ImportState(ctx context.Context, req resource.Impor
 // Helper functions to convert between Terraform and API models
 func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel) *preferenceclient.Preference {
 	apiModel := &preferenceclient.Preference{
-		ResourceID: int(tfModel.ResourceID.ValueInt64()),
+		ResourceID: tfModel.ResourceID.ValueInt64(),
 	}
 
 	if !tfModel.ContentType.IsNull() {
@@ -422,7 +422,7 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 	// Convert AvailabilityThresholds
 	if tfModel.AvailabilityThresholds != nil {
 		if !tfModel.AvailabilityThresholds.World.IsNull() {
-			apiModel.AvailabilityThresholds.World = tfModel.AvailabilityThresholds.World.ValueFloat64()
+			apiModel.AvailabilityThresholds.World = tfModel.AvailabilityThresholds.World.ValueInt64()
 		}
 
 		if tfModel.AvailabilityThresholds.Continents != nil {
@@ -432,14 +432,14 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 				apiContinent := preferenceclient.ContinentThreshold{}
 
 				if !tfContinent.Default.IsNull() {
-					apiContinent.Default = tfContinent.Default.ValueFloat64()
+					apiContinent.Default = tfContinent.Default.ValueInt64()
 				}
 
 				if tfContinent.Countries != nil {
-					apiContinent.Countries = make(map[string]float64)
+					apiContinent.Countries = make(map[string]int64)
 					for country, threshold := range tfContinent.Countries {
 						if !threshold.IsNull() {
-							apiContinent.Countries[country] = threshold.ValueFloat64()
+							apiContinent.Countries[country] = threshold.ValueInt64()
 						}
 					}
 				}
@@ -555,7 +555,7 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 
 	// Convert AvailabilityThresholds
 	tfModel.AvailabilityThresholds = &availabilityThresholdsModel{
-		World:      types.Float64Value(apiModel.AvailabilityThresholds.World),
+		World:      types.Int64Value(apiModel.AvailabilityThresholds.World),
 		Continents: nil, // Initialize as nil, not empty map
 	}
 
@@ -565,16 +565,16 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 
 		for continent, apiContinent := range apiModel.AvailabilityThresholds.Continents {
 			tfContinent := &continentThresholdModel{
-				Default:   types.Float64Value(apiContinent.Default),
+				Default:   types.Int64Value(apiContinent.Default),
 				Countries: nil, // Initialize as nil, not empty map
 			}
 
 			// Only initialize countries map if there are actual countries
 			if len(apiContinent.Countries) > 0 {
-				tfContinent.Countries = make(map[string]types.Float64)
+				tfContinent.Countries = make(map[string]types.Int64)
 
 				for country, threshold := range apiContinent.Countries {
-					tfContinent.Countries[country] = types.Float64Value(threshold)
+					tfContinent.Countries[country] = types.Int64Value(threshold)
 				}
 			}
 
