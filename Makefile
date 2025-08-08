@@ -1,7 +1,7 @@
 HOSTNAME=registry.terraform.io
 NAMESPACE=constellix
 NAME=constellix-multicdn
-VERSION=0.0.1
+VERSION := $(shell cat VERSION)
 OS_ARCH=darwin_arm64
 
 default: install
