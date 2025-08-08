@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 
 	"github.com/constellix/terraform-provider-constellix-multicdn/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -23,7 +23,10 @@ func main() {
 	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
 
-	fmt.Printf("Version: %s, Commit: %s\n", version, commit)
+	tflog.Info(context.Background(), "Provider version info", map[string]interface{}{
+		"version": version,
+		"commit":  commit,
+	})
 
 	opts := providerserver.ServeOpts{
 		Address: "registry.terraform.io/constellix/constellix-multicdn",
