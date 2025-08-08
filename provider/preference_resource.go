@@ -412,10 +412,10 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 		apiModel.Version = tfModel.Version.ValueString()
 	}
 
-	if !tfModel.LastUpdated.IsNull() {
+	if !tfModel.LastUpdated.IsNull() && tfModel.LastUpdated.ValueString() != "" {
 		parsedTime, err := time.Parse(time.RFC3339, tfModel.LastUpdated.ValueString())
 		if err == nil {
-			apiModel.LastUpdated = parsedTime
+			apiModel.LastUpdated = &parsedTime
 		}
 	}
 
@@ -541,7 +541,7 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		tfModel.Version = types.StringNull()
 	}
 
-	if !apiModel.LastUpdated.IsZero() {
+	if apiModel.LastUpdated != nil {
 		tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.Format(time.RFC3339))
 	} else {
 		tfModel.LastUpdated = types.StringNull()

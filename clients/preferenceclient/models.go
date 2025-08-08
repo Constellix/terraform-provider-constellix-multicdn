@@ -21,7 +21,7 @@ type Preference struct {
 	ContentType                 string                      `json:"contentType,omitempty"`
 	Description                 string                      `json:"description,omitempty"`
 	Version                     string                      `json:"version,omitempty"`
-	LastUpdated                 time.Time                   `json:"lastUpdated,omitempty"`
+	LastUpdated                 *time.Time                  `json:"lastUpdated,omitempty"`
 	AvailabilityThresholds      AvailabilityThresholds      `json:"availabilityThresholds"`
 	PerformanceFiltering        PerformanceFiltering        `json:"performanceFiltering"`
 	EnabledSubdivisionCountries EnabledSubdivisionCountries `json:"enabledSubdivisionCountries"`
