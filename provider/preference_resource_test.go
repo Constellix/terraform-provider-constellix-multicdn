@@ -96,7 +96,7 @@ func TestAccPreferenceResource_completeLifecycle(t *testing.T) {
 					// Check updated availability thresholds
 					resource.TestCheckResourceAttr("multicdn_preference_config.test", "availability_thresholds.world", "96"),
 					// Check updated performance filtering
-					resource.TestCheckResourceAttr("multicdn_preference_config.test", "performance_filtering.world.relative_threshold", "0.3"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.test", "performance_filtering.world.relative_threshold", "0"),
 					testAccCheckPreferenceWorld(12345, 96, mockPreferences),
 				),
 			},
@@ -358,7 +358,7 @@ resource "multicdn_preference_config" "test" {
   performance_filtering = {
     world = {
       mode = "relative"
-      relative_threshold = 0.3  # Updated value
+      relative_threshold = 0.0  # Updated value
     }
     continents = {
       "EU" = {

@@ -169,7 +169,7 @@ func TestCreatePreference(t *testing.T) {
 				PerformanceFiltering: PerformanceFiltering{
 					World: PerformanceConfig{
 						Mode:              "relative",
-						RelativeThreshold: 0.2,
+						RelativeThreshold: toFloat64Pointer(0.2),
 					},
 				},
 				EnabledSubdivisionCountries: EnabledSubdivisionCountries{
@@ -237,6 +237,10 @@ func TestCreatePreference(t *testing.T) {
 			}
 		})
 	}
+}
+
+func toFloat64Pointer(f float64) *float64 {
+	return &f
 }
 
 func givenPreferenceClient(serverURL string) *Client {
@@ -367,7 +371,7 @@ func TestUpdatePreference(t *testing.T) {
 				PerformanceFiltering: PerformanceFiltering{
 					World: PerformanceConfig{
 						Mode:              "relative",
-						RelativeThreshold: 1.3,
+						RelativeThreshold: toFloat64Pointer(1.3),
 					},
 				},
 				EnabledSubdivisionCountries: EnabledSubdivisionCountries{},
@@ -609,7 +613,7 @@ func TestGetPerformanceFiltering(t *testing.T) {
 						"countries": {
 							"DE": {
 								"mode": "relative",
-								"relativeThreshold": 0.05
+								"relativeThreshold": 0.0
 							}
 						}
 					}
@@ -665,16 +669,22 @@ func TestGetPerformanceFiltering(t *testing.T) {
 				if filtering.World.Mode != "relative" {
 					t.Errorf("Expected world mode 'relative', got %s", filtering.World.Mode)
 				}
-				if filtering.World.RelativeThreshold != 0.2 {
-					t.Errorf("Expected world threshold 0.2, got %f", filtering.World.RelativeThreshold)
+				if filtering.World.RelativeThreshold == nil {
+					t.Error("Expected world relative threshold but found nil")
+				}
+				if *filtering.World.RelativeThreshold != 0.2 {
+					t.Errorf("Expected world threshold 0.2, got %f", *filtering.World.RelativeThreshold)
 				}
 				if continent, ok := filtering.Continents["EU"]; ok {
 					if continent.Mode != "relative" {
 						t.Errorf("Expected EU mode 'relative', got %s", continent.Mode)
 					}
 					if country, ok := continent.Countries["DE"]; ok {
-						if country.RelativeThreshold != 0.05 {
-							t.Errorf("Expected DE threshold 0.05, got %f", country.RelativeThreshold)
+						if country.RelativeThreshold == nil {
+							t.Error("Expected DE country configuration but found nil")
+						}
+						if *country.RelativeThreshold != 0.0 {
+							t.Errorf("Expected DE threshold 0.0, got %.1f", *country.RelativeThreshold)
 						}
 					} else {
 						t.Error("Expected DE country configuration but found none")
