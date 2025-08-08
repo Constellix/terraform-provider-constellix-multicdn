@@ -77,21 +77,21 @@ resource "multicdn_preference_config" "advanced_preferences" {
     continents = {
       "NA" = {
         mode = "relative",
-        relative_threshold = 1.2,  # Accept CDNs within 20% of the fastest one in North America
+        relative_threshold = 0.2,
         countries = {
           "US" = {
             mode = "relative",
-            relative_threshold = 1.1  # Stricter in US (within 10% of fastest)
+            relative_threshold = 0.1
           }
         }
       },
       "EU" = {
         mode = "relative",
-        relative_threshold = 1.3  # More lenient in Europe (within 30% of fastest)
+        relative_threshold = 0.3
       },
       "AS" = {
         mode = "relative",
-        relative_threshold = 1.5  # Most lenient in Asia (within 50% of fastest)
+        relative_threshold = 0.5
       }
     }
   }
@@ -182,11 +182,11 @@ resource "multicdn_preference_config" "api_preferences" {
     continents = {
       "NA" = {
         mode = "relative",
-        relative_threshold = 1.1  # Strict performance requirements
+        relative_threshold = 0.9
       },
       "EU" = {
         mode = "relative",
-        relative_threshold = 1.1  # Strict performance requirements
+        relative_threshold = 0.1
       }
     }
   }
@@ -270,7 +270,7 @@ Optional:
 
 - `countries` (Attributes Map) Country-specific performance configurations (see [below for nested schema](#nestedatt--performance_filtering--continents--countries))
 - `mode` (String) Performance filtering mode for the continent (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for the continent (e.g., 1.2 means within 20% of fastest)
+- `relative_threshold` (Number) Relative performance threshold for the continent (range 0.0 to 1.0)
 
 <a id="nestedatt--performance_filtering--continents--countries"></a>
 ### Nested Schema for `performance_filtering.continents.countries`
@@ -278,7 +278,7 @@ Optional:
 Optional:
 
 - `mode` (String) Performance filtering mode for the country (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for the country (e.g., 1.1 means within 10% of fastest)
+- `relative_threshold` (Number) Relative performance threshold for the country (range 0.0 to 1.0)
 
 
 
@@ -288,4 +288,4 @@ Optional:
 Optional:
 
 - `mode` (String) Performance filtering mode (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for global filtering (e.g., 1.2 means within 20% of fastest)
+- `relative_threshold` (Number) Relative performance threshold for global filtering (range 0.0 to 1.0)
