@@ -21,7 +21,7 @@ type Preference struct {
 	ContentType                 string                      `json:"contentType,omitempty"`
 	Description                 string                      `json:"description,omitempty"`
 	Version                     string                      `json:"version,omitempty"`
-	LastUpdated                 time.Time                   `json:"lastUpdated,omitempty"`
+	LastUpdated                 *time.Time                  `json:"lastUpdated,omitempty"`
 	AvailabilityThresholds      AvailabilityThresholds      `json:"availabilityThresholds"`
 	PerformanceFiltering        PerformanceFiltering        `json:"performanceFiltering"`
 	EnabledSubdivisionCountries EnabledSubdivisionCountries `json:"enabledSubdivisionCountries"`
@@ -47,14 +47,16 @@ type PerformanceFiltering struct {
 
 // PerformanceConfig represents a performance filtering configuration
 type PerformanceConfig struct {
-	Mode              string  `json:"mode,omitempty"`              // Either "relative" or "absolute"
-	RelativeThreshold float64 `json:"relativeThreshold,omitempty"` // range 0.0-1.0
+	Mode string `json:"mode,omitempty"` // Either "relative" or "absolute"
+	// Using *float64 to allow for 0.0 value
+	RelativeThreshold *float64 `json:"relativeThreshold,omitempty"` // range 0.0-1.0
 }
 
 // ContinentPerformanceConfig represents performance configuration for a continent
 type ContinentPerformanceConfig struct {
-	Mode              string                       `json:"mode,omitempty"`
-	RelativeThreshold float64                      `json:"relativeThreshold,omitempty"` // range 0.0-1.0
+	Mode string `json:"mode,omitempty"`
+	// Using *float64 to allow for 0.0 value
+	RelativeThreshold *float64                     `json:"relativeThreshold,omitempty"` // range 0.0-1.0
 	Countries         map[string]PerformanceConfig `json:"countries,omitempty"`
 }
 

@@ -412,10 +412,10 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 		apiModel.Version = tfModel.Version.ValueString()
 	}
 
-	if !tfModel.LastUpdated.IsNull() {
+	if !tfModel.LastUpdated.IsNull() && tfModel.LastUpdated.ValueString() != "" {
 		parsedTime, err := time.Parse(time.RFC3339, tfModel.LastUpdated.ValueString())
 		if err == nil {
-			apiModel.LastUpdated = parsedTime
+			apiModel.LastUpdated = &parsedTime
 		}
 	}
 
@@ -457,9 +457,7 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 				apiModel.PerformanceFiltering.World.Mode = tfModel.PerformanceFiltering.World.Mode.ValueString()
 			}
 
-			if !tfModel.PerformanceFiltering.World.RelativeThreshold.IsNull() {
-				apiModel.PerformanceFiltering.World.RelativeThreshold = tfModel.PerformanceFiltering.World.RelativeThreshold.ValueFloat64()
-			}
+			apiModel.PerformanceFiltering.World.RelativeThreshold = tfModel.PerformanceFiltering.World.RelativeThreshold.ValueFloat64Pointer()
 		}
 
 		// Convert Continents performance config
@@ -473,9 +471,7 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 					apiContinent.Mode = tfContinent.Mode.ValueString()
 				}
 
-				if !tfContinent.RelativeThreshold.IsNull() {
-					apiContinent.RelativeThreshold = tfContinent.RelativeThreshold.ValueFloat64()
-				}
+				apiContinent.RelativeThreshold = tfContinent.RelativeThreshold.ValueFloat64Pointer()
 
 				// Convert Countries performance config
 				if tfContinent.Countries != nil {
@@ -488,9 +484,7 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 							apiCountry.Mode = tfCountry.Mode.ValueString()
 						}
 
-						if !tfCountry.RelativeThreshold.IsNull() {
-							apiCountry.RelativeThreshold = tfCountry.RelativeThreshold.ValueFloat64()
-						}
+						apiCountry.RelativeThreshold = tfCountry.RelativeThreshold.ValueFloat64Pointer()
 
 						apiContinent.Countries[country] = apiCountry
 					}
@@ -547,7 +541,7 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		tfModel.Version = types.StringNull()
 	}
 
-	if !apiModel.LastUpdated.IsZero() {
+	if apiModel.LastUpdated != nil {
 		tfModel.LastUpdated = types.StringValue(apiModel.LastUpdated.Format(time.RFC3339))
 	} else {
 		tfModel.LastUpdated = types.StringNull()
@@ -590,7 +584,9 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 
 	// Convert World performance config
 	tfModel.PerformanceFiltering.World.Mode = types.StringValue(apiModel.PerformanceFiltering.World.Mode)
-	tfModel.PerformanceFiltering.World.RelativeThreshold = types.Float64Value(apiModel.PerformanceFiltering.World.RelativeThreshold)
+	if apiModel.PerformanceFiltering.World.RelativeThreshold != nil {
+		tfModel.PerformanceFiltering.World.RelativeThreshold = types.Float64Value(*apiModel.PerformanceFiltering.World.RelativeThreshold)
+	}
 
 	// Only initialize continents map if there are actual continents
 	if len(apiModel.PerformanceFiltering.Continents) > 0 {
@@ -599,9 +595,11 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		// Convert Continents performance config
 		for continent, apiContinent := range apiModel.PerformanceFiltering.Continents {
 			tfContinent := &continentPerformanceConfigModel{
-				Mode:              types.StringValue(apiContinent.Mode),
-				RelativeThreshold: types.Float64Value(apiContinent.RelativeThreshold),
-				Countries:         nil, // Initialize as nil, not empty map
+				Mode:      types.StringValue(apiContinent.Mode),
+				Countries: nil, // Initialize as nil, not empty map
+			}
+			if apiContinent.RelativeThreshold != nil {
+				tfContinent.RelativeThreshold = types.Float64Value(*apiContinent.RelativeThreshold)
 			}
 
 			// Only initialize countries map if there are actual countries
@@ -611,8 +609,10 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 				// Convert Countries performance config
 				for country, apiCountry := range apiContinent.Countries {
 					tfCountry := &performanceConfigModel{
-						Mode:              types.StringValue(apiCountry.Mode),
-						RelativeThreshold: types.Float64Value(apiCountry.RelativeThreshold),
+						Mode: types.StringValue(apiCountry.Mode),
+					}
+					if apiCountry.RelativeThreshold != nil {
+						tfCountry.RelativeThreshold = types.Float64Value(*apiCountry.RelativeThreshold)
 					}
 
 					tfContinent.Countries[country] = tfCountry

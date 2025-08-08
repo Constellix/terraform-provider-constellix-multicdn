@@ -52,7 +52,7 @@ func (p *multiCDNProvider) Schema(_ context.Context, _ provider.SchemaRequest, r
 				Sensitive:   true,
 			},
 			"base_url": schema.StringAttribute{
-				Description: "Base URL for MultiCDN API (optional)",
+				Description: "Base URL for MultiCDN API",
 				Required:    true,
 			},
 		},
