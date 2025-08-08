@@ -18,4 +18,4 @@ Provider for managing MultiCDN API resources, including CDN and preference confi
 
 - `api_key` (String, Sensitive) API Key for MultiCDN API authentication
 - `api_secret` (String, Sensitive) API Secret for MultiCDN API authentication
-- `base_url` (String) Base URL for MultiCDN API (optional)
+- `base_url` (String) Base URL for MultiCDN API
