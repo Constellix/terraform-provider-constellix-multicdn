@@ -70,7 +70,10 @@ resource "multicdn_cdn_config" "test" {
         
         countries = {
           "DE" = {
-            default = ["cdn1", "cdn2"]
+            default = ["cdn1", "cdn2"],
+			asn_overrides ={
+              "703": ["CDN-B-001", "CDN-C-001"]
+            }
           }
         }
       }
@@ -446,6 +449,10 @@ resource "multicdn_cdn_config" "comprehensive" {
           }
           "CA" = {
             default = ["cdn2", "cdn3"]
+   			asn_overrides = {
+              "33440" = ["cdn4"]
+              "24680" = ["cdn3", "cdn2"]
+            }
           }
         }
       }
@@ -455,9 +462,17 @@ resource "multicdn_cdn_config" "comprehensive" {
         countries = {
           "DE" = {
             default = ["cdn1", "cdn3"]
+			asn_overrides = {
+              "33440" = ["cdn4"]
+              "24680" = ["cdn3", "cdn2"]
+            }
           }
           "FR" = {
             default = ["cdn2"]
+			asn_overrides = {
+              "33440" = ["cdn4"]
+              "24680" = ["cdn3", "cdn2"]
+            }
           }
         }
       }
@@ -682,6 +697,10 @@ resource "multicdn_cdn_config" "comprehensive" {
           }
           "CA" = {
             default = ["cdn1"]  // Changed from cdn2, cdn3
+			asn_overrides = {
+			  "12345" = ["cdn1"]
+			  "67890" = ["cdn2", "cdn3"]
+			}
           }
         }
       }
@@ -691,9 +710,17 @@ resource "multicdn_cdn_config" "comprehensive" {
         countries = {
           "DE" = {
             default = ["cdn2", "cdn3"]  // Changed from cdn1, cdn3
+			asn_overrides = {
+			  "12345" = ["cdn1"]
+			  "67890" = ["cdn2", "cdn3"]
+			}
           }
           "FR" = {
             default = ["cdn3"]  // Changed from cdn2
+			asn_overrides = {
+			  "12345" = ["cdn1"]
+			  "67890" = ["cdn2", "cdn3"]
+    		}
           }
         }
       }
