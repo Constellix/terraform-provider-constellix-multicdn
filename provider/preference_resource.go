@@ -128,7 +128,7 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					},
 					"continents": schema.MapNestedAttribute{
 						Description: "Continent-specific availability thresholds",
-						Optional:    true,
+						Required:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"default": schema.Int64Attribute{
@@ -137,7 +137,7 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								},
 								"countries": schema.MapAttribute{
 									Description: "Country-specific thresholds (0-100)",
-									Optional:    true,
+									Required:    true,
 									ElementType: types.Int64Type,
 								},
 							},
@@ -151,11 +151,11 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Attributes: map[string]schema.Attribute{
 					"world": schema.SingleNestedAttribute{
 						Description: "Global performance filtering configuration",
-						Optional:    true,
+						Required:    true,
 						Attributes: map[string]schema.Attribute{
 							"mode": schema.StringAttribute{
 								Description: "Performance filtering mode (relative or absolute)",
-								Optional:    true,
+								Required:    true,
 							},
 							"relative_threshold": schema.Float64Attribute{
 								Description: "Relative performance threshold",
@@ -165,12 +165,12 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					},
 					"continents": schema.MapNestedAttribute{
 						Description: "Continent-specific performance configurations",
-						Optional:    true,
+						Required:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"mode": schema.StringAttribute{
 									Description: "Performance filtering mode for the continent",
-									Optional:    true,
+									Required:    true,
 								},
 								"relative_threshold": schema.Float64Attribute{
 									Description: "Relative performance threshold for the continent",
@@ -178,12 +178,12 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								},
 								"countries": schema.MapNestedAttribute{
 									Description: "Country-specific performance configurations",
-									Optional:    true,
+									Required:    true,
 									NestedObject: schema.NestedAttributeObject{
 										Attributes: map[string]schema.Attribute{
 											"mode": schema.StringAttribute{
 												Description: "Performance filtering mode for the country",
-												Optional:    true,
+												Required:    true,
 											},
 											"relative_threshold": schema.Float64Attribute{
 												Description: "Relative performance threshold for the country",
@@ -203,12 +203,12 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Attributes: map[string]schema.Attribute{
 					"continents": schema.MapNestedAttribute{
 						Description: "Continent-specific subdivision configurations",
-						Optional:    true,
+						Required:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"countries": schema.ListAttribute{
 									Description: "List of countries with enabled subdivisions",
-									Optional:    true,
+									Required:    true,
 									ElementType: types.StringType,
 								},
 							},

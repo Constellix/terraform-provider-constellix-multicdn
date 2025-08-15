@@ -209,12 +209,12 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 										Attributes: map[string]schema.Attribute{
 											"default": schema.ListAttribute{
 												Description: "Default CDNs enabled for the country",
-												Optional:    true,
+												Required:    true,
 												ElementType: types.StringType,
 											},
 											"asn_overrides": schema.MapAttribute{
 												Description: "ASN-specific CDN overrides for the country",
-												Optional:    true,
+												Required:    true,
 												ElementType: types.ListType{
 													ElemType: types.StringType,
 												},
@@ -226,7 +226,7 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 													Attributes: map[string]schema.Attribute{
 														"asn_overrides": schema.MapAttribute{
 															Description: "ASN-specific CDN overrides for the subdivision",
-															Optional:    true,
+															Required:    true,
 															ElementType: types.ListType{
 																ElemType: types.StringType,
 															},
@@ -252,7 +252,7 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 						Attributes: map[string]schema.Attribute{
 							"options": schema.ListNestedAttribute{
 								Description: "Traffic distribution options",
-								Optional:    true,
+								Required:    true,
 								NestedObject: schema.NestedAttributeObject{
 									Attributes: map[string]schema.Attribute{
 										"name": schema.StringAttribute{
@@ -295,7 +295,7 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 							Attributes: map[string]schema.Attribute{
 								"default": schema.SingleNestedAttribute{
 									Description: "Default traffic distribution for the continent",
-									Optional:    true,
+									Required:    true,
 									Attributes: map[string]schema.Attribute{
 										"options": schema.ListNestedAttribute{
 											Description: "Traffic distribution options",

@@ -401,12 +401,31 @@ resource "multicdn_preference_config" "test" {
   
   availability_thresholds = {
     world = 95
+    continents = {
+      "NA" = {
+        default = 98
+        countries = {
+          "US" = 99
+        }
+      }
+    }
   }
   
   performance_filtering = {
     world = {
       mode = "relative"
       relative_threshold = 0.5
+    }
+    continents = {
+      "NA" = {
+        mode = "absolute"
+        countries = {
+          "US" = {
+			  mode = "relative"
+			  relative_threshold = 0.5
+			}
+        }
+      }
     }
   }
   
@@ -675,6 +694,14 @@ resource "multicdn_preference_config" "minimal" {
   // Minimal availability thresholds
   availability_thresholds = {
     world = 95
+    continents = {
+      "NA" = {	
+		default = 98
+        countries = {
+          "US" = 99
+        }
+      }
+    }
   }
   
   // Minimal performance filtering
@@ -682,6 +709,17 @@ resource "multicdn_preference_config" "minimal" {
     world = {
       mode = "relative"
       relative_threshold = 0.1
+    }
+    continents = {
+      "NA" = {
+        mode = "relative"
+        countries = {
+          "US" = {
+            mode = "relative"
+            relative_threshold = 0.15
+          }
+        }
+      }
     }
   }
   

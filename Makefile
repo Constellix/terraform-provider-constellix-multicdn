@@ -26,7 +26,3 @@ testacc:
 .PHONY: clean
 clean:
 	rm -f terraform-provider-${NAME}_v${VERSION}
-
-.PHONY: docs
-docs:
-	./gendoc.sh
