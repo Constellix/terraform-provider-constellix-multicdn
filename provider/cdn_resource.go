@@ -182,24 +182,24 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 				Attributes: map[string]schema.Attribute{
 					"world_default": schema.ListAttribute{
 						Description: "Default CDNs enabled globally",
-						Optional:    true,
+						Required:    true,
 						ElementType: types.StringType,
 					},
 					"asn_overrides": schema.MapAttribute{
 						Description: "ASN-specific CDN overrides",
-						Optional:    true,
+						Required:    true,
 						ElementType: types.ListType{
 							ElemType: types.StringType,
 						},
 					},
 					"continents": schema.MapNestedAttribute{
 						Description: "Continent-specific enablement configurations",
-						Optional:    true,
+						Required:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"default": schema.ListAttribute{
 									Description: "Default CDNs enabled for the continent",
-									Optional:    true,
+									Required:    true,
 									ElementType: types.StringType,
 								},
 								"countries": schema.MapNestedAttribute{
@@ -295,7 +295,7 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 							Attributes: map[string]schema.Attribute{
 								"default": schema.SingleNestedAttribute{
 									Description: "Default traffic distribution for the continent",
-									Required:    true,
+									Optional:    true,
 									Attributes: map[string]schema.Attribute{
 										"options": schema.ListNestedAttribute{
 											Description: "Traffic distribution options",
@@ -342,7 +342,7 @@ func (r *cdnResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *
 										Attributes: map[string]schema.Attribute{
 											"default": schema.SingleNestedAttribute{
 												Description: "Default traffic distribution for the country",
-												Required:    true,
+												Optional:    true,
 												Attributes: map[string]schema.Attribute{
 													"options": schema.ListNestedAttribute{
 														Description: "Traffic distribution options",
