@@ -63,7 +63,10 @@ resource "multicdn_cdn_config" "test" {
   
   cdn_enablement_map = {
     world_default = ["cdn1", "cdn2"]
-    
+    asn_overrides = {
+	  "12345" = ["cdn1"]
+	  "67890" = ["cdn2"]
+	}
     continents = {
       "EU" = {
         default = ["cdn2"]
@@ -166,7 +169,15 @@ resource "multicdn_cdn_config" "test" {
   
   cdn_enablement_map = {
     world_default = ["cdn1"]
-  }
+	asn_overrides = {
+	  "12345" = ["cdn1"]
+    }
+	continents = {
+	  "NA" = {
+	    default = ["cdn1"]
+      }
+    }
+  }	
   
   traffic_distribution = {
     world_default = {
@@ -874,6 +885,14 @@ resource "multicdn_cdn_config" "minimal" {
   // Minimal required enablement map
   cdn_enablement_map = {
     world_default = ["minimal-cdn"]
+	asn_overrides = {
+	  "12345" = ["minimal-cdn"]
+	}
+	continents = {
+	  "NA" = {
+	    default = ["minimal-cdn"]
+      }
+	}
   }
   
   // Minimal required traffic distribution
