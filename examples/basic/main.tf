@@ -2,7 +2,7 @@ terraform {
   required_providers {
     multicdn = {
       source  = "constellix/constellix-multicdn"
-      version = "0.0.4-dev"
+      version = "0.0.4"
     }
   }
 }
