@@ -206,24 +206,27 @@ resource "multicdn_preference_config" "api_preferences" {
 
 ### Required
 
-- `availability_thresholds` (Attributes) Availability thresholds configuration (see [below for nested schema](#nestedatt--availability_thresholds))
-- `enabled_subdivision_countries` (Attributes) Configuration for countries with enabled subdivisions (see [below for nested schema](#nestedatt--enabled_subdivision_countries))
-- `performance_filtering` (Attributes) Performance filtering configuration (see [below for nested schema](#nestedatt--performance_filtering))
 - `resource_id` (Number) Unique ID of the CDN preference configuration
+- `availability_thresholds` (Attributes) Availability thresholds configuration (see [below for nested schema](#nestedatt--availability_thresholds))
+- `performance_filtering` (Attributes) Performance filtering configuration (see [below for nested schema](#nestedatt--performance_filtering))
+- `enabled_subdivision_countries` (Attributes) Configuration for countries with enabled subdivisions (see [below for nested schema](#nestedatt--enabled_subdivision_countries))
 
 ### Optional
 
 - `content_type` (String) Content type of the CDN preference configuration
 - `description` (String) Description of the CDN preference configuration
-- `last_updated` (String) Timestamp of when the configuration was last updated
 - `version` (String) Version of the CDN preference configuration
+- `last_updated` (String) Timestamp of when the configuration was last updated
 
 <a id="nestedatt--availability_thresholds"></a>
 ### Nested Schema for `availability_thresholds`
 
-Optional:
+Required:
 
 - `continents` (Attributes Map) Continent-specific availability thresholds (see [below for nested schema](#nestedatt--availability_thresholds--continents))
+
+Optional:
+
 - `world` (Number) Global availability threshold (0-100)
 
 <a id="nestedatt--availability_thresholds--continents"></a>
@@ -232,60 +235,63 @@ Optional:
 Required:
 
 - `default` (Number) Default threshold for the continent (0-100)
+- `countries` (Map of Number) Country-specific thresholds (0-100)
+
+<a id="nestedatt--performance_filtering"></a>
+### Nested Schema for `performance_filtering`
+
+Required:
+
+- `world` (Attributes) Global performance filtering configuration (see [below for nested schema](#nestedatt--performance_filtering--world))
+- `continents` (Attributes Map) Continent-specific performance configurations (see [below for nested schema](#nestedatt--performance_filtering--continents))
+
+<a id="nestedatt--performance_filtering--world"></a>
+### Nested Schema for `performance_filtering.world`
+
+Required:
+
+- `mode` (String) Performance filtering mode (valid values: "relative", "absolute")
 
 Optional:
 
-- `countries` (Map of Number) Country-specific thresholds (0-100)
+- `relative_threshold` (Number) Relative performance threshold for global filtering (range 0.0 to 1.0)
 
+<a id="nestedatt--performance_filtering--continents"></a>
+### Nested Schema for `performance_filtering.continents`
+
+
+Required:
+
+- `mode` (String) Performance filtering mode (valid values: "relative", "absolute")
+
+Optional:
+
+- `countries` (Attributes Map) Country-specific performance configurations (see [below for nested schema](#nestedatt--performance_filtering--continents--countries))
+- `relative_threshold` (Number) Relative performance threshold for the continent (range 0.0 to 1.0)
+
+<a id="nestedatt--performance_filtering--continents--countries"></a>
+### Nested Schema for `performance_filtering.continents.countries`
+
+
+Required:
+
+- `mode` (String) Performance filtering mode (valid values: "relative", "absolute")
+
+Optional:
+
+- `relative_threshold` (Number) Relative performance threshold for the country (range 0.0 to 1.0)
 
 
 <a id="nestedatt--enabled_subdivision_countries"></a>
 ### Nested Schema for `enabled_subdivision_countries`
 
-Optional:
+Required:
 
 - `continents` (Attributes Map) Continent-specific subdivision configurations (see [below for nested schema](#nestedatt--enabled_subdivision_countries--continents))
 
 <a id="nestedatt--enabled_subdivision_countries--continents"></a>
 ### Nested Schema for `enabled_subdivision_countries.continents`
 
-Optional:
+Required:
 
 - `countries` (List of String) List of countries with enabled subdivisions
-
-
-
-<a id="nestedatt--performance_filtering"></a>
-### Nested Schema for `performance_filtering`
-
-Optional:
-
-- `continents` (Attributes Map) Continent-specific performance configurations (see [below for nested schema](#nestedatt--performance_filtering--continents))
-- `world` (Attributes) Global performance filtering configuration (see [below for nested schema](#nestedatt--performance_filtering--world))
-
-<a id="nestedatt--performance_filtering--continents"></a>
-### Nested Schema for `performance_filtering.continents`
-
-Optional:
-
-- `countries` (Attributes Map) Country-specific performance configurations (see [below for nested schema](#nestedatt--performance_filtering--continents--countries))
-- `mode` (String) Performance filtering mode for the continent (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for the continent (range 0.0 to 1.0)
-
-<a id="nestedatt--performance_filtering--continents--countries"></a>
-### Nested Schema for `performance_filtering.continents.countries`
-
-Optional:
-
-- `mode` (String) Performance filtering mode for the country (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for the country (range 0.0 to 1.0)
-
-
-
-<a id="nestedatt--performance_filtering--world"></a>
-### Nested Schema for `performance_filtering.world`
-
-Optional:
-
-- `mode` (String) Performance filtering mode (valid values: "relative", "absolute")
-- `relative_threshold` (Number) Relative performance threshold for global filtering (range 0.0 to 1.0)
