@@ -17,14 +17,15 @@ type PreferencePage struct {
 
 // Preference represents the complete CDN preference configuration
 type Preference struct {
-	ResourceID                  int64                       `json:"resourceId"`
-	ContentType                 string                      `json:"contentType,omitempty"`
-	Description                 string                      `json:"description,omitempty"`
-	Version                     string                      `json:"version,omitempty"`
-	LastUpdated                 *time.Time                  `json:"lastUpdated,omitempty"`
-	AvailabilityThresholds      AvailabilityThresholds      `json:"availabilityThresholds"`
-	PerformanceFiltering        PerformanceFiltering        `json:"performanceFiltering"`
-	EnabledSubdivisionCountries EnabledSubdivisionCountries `json:"enabledSubdivisionCountries"`
+	ResourceID                       int64                            `json:"resourceId"`
+	ContentType                      string                           `json:"contentType,omitempty"`
+	Description                      string                           `json:"description,omitempty"`
+	Version                          string                           `json:"version,omitempty"`
+	LastUpdated                      *time.Time                       `json:"lastUpdated,omitempty"`
+	AvailabilityThresholds           AvailabilityThresholds           `json:"availabilityThresholds"`
+	PerformanceFiltering             PerformanceFiltering             `json:"performanceFiltering"`
+	EnabledSubdivisionCountries      EnabledSubdivisionCountries      `json:"enabledSubdivisionCountries"`
+	MinimumMeasurementCountThreshold MinimumMeasurementCountThreshold `json:"minimumMeasurementCountThreshold"`
 }
 
 // AvailabilityThresholds represents the thresholds for availability
@@ -68,4 +69,10 @@ type EnabledSubdivisionCountries struct {
 // ContinentSubdivisions represents subdivision countries within a continent
 type ContinentSubdivisions struct {
 	Countries []string `json:"countries,omitempty"`
+}
+
+// MinimumMeasurementCountThreshold represents the minimum measurement count thresholds for roll-up
+type MinimumMeasurementCountThreshold struct {
+	World      int64                         `json:"world,omitempty"` // range > 0
+	Continents map[string]ContinentThreshold `json:"continents,omitempty"`
 }
