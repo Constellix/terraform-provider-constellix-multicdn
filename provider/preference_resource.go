@@ -229,20 +229,20 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Attributes: map[string]schema.Attribute{
 					"world": schema.Int64Attribute{
 						Description: "Global minimum measurement count (> 0)",
-						Required:    true,
+						Optional:    true,
 					},
 					"continents": schema.MapNestedAttribute{
 						Description: "Continent-specific minimum measurement counts",
-						Required:    true,
+						Optional:    true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"default": schema.Int64Attribute{
 									Description: "Default minimum measurement counts for the continent (> 0)",
-									Required:    true,
+									Optional:    true,
 								},
 								"countries": schema.MapAttribute{
 									Description: "Country-specific minimum measurement counts (> 0)",
-									Required:    true,
+									Optional:    true,
 									ElementType: types.Int64Type,
 								},
 							},

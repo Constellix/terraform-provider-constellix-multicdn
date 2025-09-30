@@ -151,7 +151,8 @@ resource "multicdn_preference_config" "example_website_preferences" {
       "NA" = {
         countries = [
           "US",
-          "CA"
+          "CA",
+          "MX",
         ]
       },
       "EU" = {
