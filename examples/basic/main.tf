@@ -151,20 +151,24 @@ resource "multicdn_preference_config" "example_website_preferences" {
       "NA" = {
         countries = [
           "US",
-          "CA",
-          "UK",
+          "CA"
         ]
       },
+      "EU" = {
+        countries = [
+          "GB"
+        ]
+      }
     }
   }
 
   minimum_measurement_count_threshold = {
-    world = 5
+    world = 55
     continents = {
       "NA" = {
-        default = 5
+        default = 15
         countries = {
-          "US" = 5
+          "US" = 25
         }
       }
     }

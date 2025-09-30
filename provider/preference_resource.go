@@ -550,6 +550,36 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 		}
 	}
 
+	// Convert MinimumMeasurementCountThresholds
+	if tfModel.MinimumMeasurementCountThreshold != nil {
+		if !tfModel.MinimumMeasurementCountThreshold.World.IsNull() {
+			apiModel.MinimumMeasurementCountThreshold.World = tfModel.MinimumMeasurementCountThreshold.World.ValueInt64()
+		}
+
+		if tfModel.MinimumMeasurementCountThreshold.Continents != nil {
+			apiModel.MinimumMeasurementCountThreshold.Continents = make(map[string]preferenceclient.ContinentThreshold)
+
+			for continent, tfContinent := range tfModel.MinimumMeasurementCountThreshold.Continents {
+				apiContinent := preferenceclient.ContinentThreshold{}
+
+				if !tfContinent.Default.IsNull() {
+					apiContinent.Default = tfContinent.Default.ValueInt64()
+				}
+
+				if tfContinent.Countries != nil {
+					apiContinent.Countries = make(map[string]int64)
+					for country, threshold := range tfContinent.Countries {
+						if !threshold.IsNull() {
+							apiContinent.Countries[country] = threshold.ValueInt64()
+						}
+					}
+				}
+
+				apiModel.MinimumMeasurementCountThreshold.Continents[continent] = apiContinent
+			}
+		}
+	}
+
 	return apiModel
 }
 
