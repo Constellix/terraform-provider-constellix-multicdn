@@ -29,14 +29,15 @@ type preferenceResource struct {
 
 // preferenceResourceModel maps the resource schema to the API client model
 type preferenceResourceModel struct {
-	ResourceID                  types.Int64                       `tfsdk:"resource_id"`
-	ContentType                 types.String                      `tfsdk:"content_type"`
-	Description                 types.String                      `tfsdk:"description"`
-	Version                     types.String                      `tfsdk:"version"`
-	LastUpdated                 types.String                      `tfsdk:"last_updated"`
-	AvailabilityThresholds      *availabilityThresholdsModel      `tfsdk:"availability_thresholds"`
-	PerformanceFiltering        *performanceFilteringModel        `tfsdk:"performance_filtering"`
-	EnabledSubdivisionCountries *enabledSubdivisionCountriesModel `tfsdk:"enabled_subdivision_countries"`
+	ResourceID                       types.Int64                            `tfsdk:"resource_id"`
+	ContentType                      types.String                           `tfsdk:"content_type"`
+	Description                      types.String                           `tfsdk:"description"`
+	Version                          types.String                           `tfsdk:"version"`
+	LastUpdated                      types.String                           `tfsdk:"last_updated"`
+	AvailabilityThresholds           *availabilityThresholdsModel           `tfsdk:"availability_thresholds"`
+	PerformanceFiltering             *performanceFilteringModel             `tfsdk:"performance_filtering"`
+	EnabledSubdivisionCountries      *enabledSubdivisionCountriesModel      `tfsdk:"enabled_subdivision_countries"`
+	MinimumMeasurementCountThreshold *minimumMeasurementCountThresholdModel `tfsdk:"minimum_measurement_count_threshold"`
 }
 
 // availabilityThresholdsModel maps the AvailabilityThresholds schema
@@ -78,6 +79,12 @@ type enabledSubdivisionCountriesModel struct {
 // continentSubdivisionsModel maps the ContinentSubdivisions schema
 type continentSubdivisionsModel struct {
 	Countries []types.String `tfsdk:"countries"`
+}
+
+// minimumMeasurementCountThresholdModel maps the MinimumMeasurementCountThreshold schema
+type minimumMeasurementCountThresholdModel struct {
+	World      types.Int64                         `tfsdk:"world"`
+	Continents map[string]*continentThresholdModel `tfsdk:"continents"`
 }
 
 // NewPreferenceResource creates a new preference resource
@@ -210,6 +217,33 @@ func (r *preferenceResource) Schema(_ context.Context, _ resource.SchemaRequest,
 									Description: "List of countries with enabled subdivisions",
 									Required:    true,
 									ElementType: types.StringType,
+								},
+							},
+						},
+					},
+				},
+			},
+			"minimum_measurement_count_threshold": schema.SingleNestedAttribute{
+				Description: "Minimum measurement count configuration",
+				Optional:    true,
+				Attributes: map[string]schema.Attribute{
+					"world": schema.Int64Attribute{
+						Description: "Global minimum measurement count (> 0)",
+						Optional:    true,
+					},
+					"continents": schema.MapNestedAttribute{
+						Description: "Continent-specific minimum measurement counts",
+						Optional:    true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"default": schema.Int64Attribute{
+									Description: "Default minimum measurement counts for the continent (> 0)",
+									Optional:    true,
+								},
+								"countries": schema.MapAttribute{
+									Description: "Country-specific minimum measurement counts (> 0)",
+									Optional:    true,
+									ElementType: types.Int64Type,
 								},
 							},
 						},
@@ -516,6 +550,36 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 		}
 	}
 
+	// Convert MinimumMeasurementCountThresholds
+	if tfModel.MinimumMeasurementCountThreshold != nil {
+		if !tfModel.MinimumMeasurementCountThreshold.World.IsNull() {
+			apiModel.MinimumMeasurementCountThreshold.World = tfModel.MinimumMeasurementCountThreshold.World.ValueInt64()
+		}
+
+		if tfModel.MinimumMeasurementCountThreshold.Continents != nil {
+			apiModel.MinimumMeasurementCountThreshold.Continents = make(map[string]preferenceclient.ContinentThreshold)
+
+			for continent, tfContinent := range tfModel.MinimumMeasurementCountThreshold.Continents {
+				apiContinent := preferenceclient.ContinentThreshold{}
+
+				if !tfContinent.Default.IsNull() {
+					apiContinent.Default = tfContinent.Default.ValueInt64()
+				}
+
+				if tfContinent.Countries != nil {
+					apiContinent.Countries = make(map[string]int64)
+					for country, threshold := range tfContinent.Countries {
+						if !threshold.IsNull() {
+							apiContinent.Countries[country] = threshold.ValueInt64()
+						}
+					}
+				}
+
+				apiModel.MinimumMeasurementCountThreshold.Continents[continent] = apiContinent
+			}
+		}
+	}
+
 	return apiModel
 }
 
@@ -573,6 +637,29 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 			}
 
 			tfModel.AvailabilityThresholds.Continents[continent] = tfContinent
+		}
+	}
+
+	// Only initialize continents map if there are actual continents
+	if len(apiModel.MinimumMeasurementCountThreshold.Continents) > 0 {
+		tfModel.MinimumMeasurementCountThreshold.Continents = make(map[string]*continentThresholdModel)
+
+		for continent, apiContinent := range apiModel.MinimumMeasurementCountThreshold.Continents {
+			tfContinent := &continentThresholdModel{
+				Default:   types.Int64Value(apiContinent.Default),
+				Countries: nil, // Initialize as nil, not empty map
+			}
+
+			// Only initialize countries map if there are actual countries
+			if len(apiContinent.Countries) > 0 {
+				tfContinent.Countries = make(map[string]types.Int64)
+
+				for country, threshold := range apiContinent.Countries {
+					tfContinent.Countries[country] = types.Int64Value(threshold)
+				}
+			}
+
+			tfModel.MinimumMeasurementCountThreshold.Continents[continent] = tfContinent
 		}
 	}
 

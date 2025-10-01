@@ -51,6 +51,17 @@ func TestGetPreferencesPage(t *testing.T) {
 								"relativeThreshold": 0.2
 							}
 						},
+						"minimumMeasurementCountThreashold": {
+							"world": 10,
+							"continents": {
+								"NA": {
+									"default": 20,
+									"countries": {
+										"US": 50
+									}
+								}
+							}
+						},
 						"enabledSubdivisionCountries": {
 							"continents": {
 								"NA": {

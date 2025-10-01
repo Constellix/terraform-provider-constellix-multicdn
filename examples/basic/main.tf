@@ -2,7 +2,7 @@ terraform {
   required_providers {
     multicdn = {
       source  = "constellix/constellix-multicdn"
-      version = "0.0.4-dev"
+      version = "0.0.5-dev"
     }
   }
 }
@@ -152,9 +152,26 @@ resource "multicdn_preference_config" "example_website_preferences" {
         countries = [
           "US",
           "CA",
-          "UK",
+          "MX",
         ]
       },
+      "EU" = {
+        countries = [
+          "GB"
+        ]
+      }
+    }
+  }
+
+  minimum_measurement_count_threshold = {
+    world = 55
+    continents = {
+      "NA" = {
+        default = 15
+        countries = {
+          "US" = 25
+        }
+      }
     }
   }
 }
