@@ -51,7 +51,7 @@ func TestGetPreferencesPage(t *testing.T) {
 								"relativeThreshold": 0.2
 							}
 						},
-						"minimumMeasurementCountThreashold": {
+						"minimumMeasurementCountThreshold": {
 							"world": 10,
 							"continents": {
 								"NA": {
@@ -190,6 +190,17 @@ func TestCreatePreference(t *testing.T) {
 						},
 					},
 				},
+				MinimumMeasurementCountThreshold: MinimumMeasurementCountThreshold{
+					World: 10,
+					Continents: map[string]ContinentThreshold{
+						"NA": {
+							Default: 20,
+							Countries: map[string]int64{
+								"US": 50,
+							},
+						},
+					},
+				},
 			},
 			statusCode: http.StatusCreated,
 			expectErr:  false,
@@ -294,6 +305,17 @@ func TestGetPreference(t *testing.T) {
 						"relativeThreshold": 0.2
 					}
 				},
+				"minimumMeasurementCountThreshold": {
+					"world": 10,
+					"continents": {
+						"NA": {
+							"default": 20,
+							"countries": {
+								"US": 50
+							}
+						}
+					}
+				},
 				"enabledSubdivisionCountries": {
 					"continents": {
 						"NA": {
@@ -386,6 +408,9 @@ func TestUpdatePreference(t *testing.T) {
 					},
 				},
 				EnabledSubdivisionCountries: EnabledSubdivisionCountries{},
+				MinimumMeasurementCountThreshold: MinimumMeasurementCountThreshold{
+					World: 10,
+				},
 			},
 			statusCode: http.StatusOK,
 			expectErr:  false,
