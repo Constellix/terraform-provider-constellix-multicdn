@@ -551,12 +551,12 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 	}
 
 	// Convert MinimumMeasurementCountThresholds
-	// var nilMmct *minimumMeasurementCountThreshold
-	// if tfModel.MinimumMeasurementCountThreshold != nilMmct {
+	// Only send to API if user explicitly provided values (set as pointer)
 	if tfModel.MinimumMeasurementCountThreshold != nil {
+		apiModel.MinimumMeasurementCountThreshold = &preferenceclient.MinimumMeasurementCountThreshold{}
+
 		if !tfModel.MinimumMeasurementCountThreshold.World.IsNull() {
-			apiModel.MinimumMeasurementCountThreshold.World = 
-			tfModel.MinimumMeasurementCountThreshold.World.ValueInt64()
+			apiModel.MinimumMeasurementCountThreshold.World = tfModel.MinimumMeasurementCountThreshold.World.ValueInt64()
 		}
 
 		if tfModel.MinimumMeasurementCountThreshold.Continents != nil {
@@ -581,6 +581,8 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 				apiModel.MinimumMeasurementCountThreshold.Continents[continent] = apiContinent
 			}
 		}
+	} else {
+		apiModel.MinimumMeasurementCountThreshold = nil
 	}
 
 	return apiModel
@@ -643,12 +645,8 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		}
 	}
 
-	// Only convert minimum threshold if present
-	var nilMmct *preferenceclient.MinimumMeasurementCountThreshold
-	if apiModel.MinimumMeasurementCountThreshold != nilMmct {
-	// mmct := apiModel.MinimumMeasurementCountThreshold
-	// if mmct != nil {
-		// Convert MinimumMeasurementCountThreshold
+	// Convert MinimumMeasurementCountThreshold - this is a computed field, so always populate from server response if present
+	if apiModel.MinimumMeasurementCountThreshold != nil {
 		tfModel.MinimumMeasurementCountThreshold = &minimumMeasurementCountThresholdModel{
 			World:      types.Int64Value(apiModel.MinimumMeasurementCountThreshold.World),
 			Continents: nil, // Initialize as nil, not empty map
@@ -676,6 +674,9 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 				tfModel.MinimumMeasurementCountThreshold.Continents[continent] = tfContinent
 			}
 		}
+	} else {
+		// API returned nil - leave as nil
+		tfModel.MinimumMeasurementCountThreshold = nil
 	}
 
 	// Convert PerformanceFiltering
