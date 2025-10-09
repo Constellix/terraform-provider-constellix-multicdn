@@ -148,6 +148,11 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.NA.relative_threshold", "0.2"),
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.mode", "absolute"),
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.relative_threshold", "0.15"),
+					// Check minimum measurement count threshold
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "minimum_measurement_count_threshold.world", "10"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "minimum_measurement_count_threshold.continents.NA.default", "20"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "minimum_measurement_count_threshold.continents.NA.countries.US", "50"),
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "minimum_measurement_count_threshold.continents.EU.default", "25"),
 					// Check enabled subdivision countries
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "2"),
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.EU.countries.#", "2"),
@@ -167,6 +172,8 @@ func TestAccPreferenceResource_comprehensive(t *testing.T) {
 					// Check updated performance filtering
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.world.relative_threshold", "0.3"),
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "performance_filtering.continents.EU.mode", "relative"),
+					// Check updated minimum measurement count threshold
+					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "minimum_measurement_count_threshold.continents.NA.countries.US", "55"),
 					// Check updated enabled subdivision countries
 					resource.TestCheckResourceAttr("multicdn_preference_config.comprehensive", "enabled_subdivision_countries.continents.NA.countries.#", "3"),
 				),
@@ -374,7 +381,7 @@ resource "multicdn_preference_config" "test" {
     }
   }
   
-  enabled_subdivision_countries ={
+  enabled_subdivision_countries = {
     continents = {
       "NA" = {
         countries = ["US", "CA"]
@@ -539,6 +546,23 @@ resource "multicdn_preference_config" "comprehensive" {
       }
     }
   }
+
+  // Comprehensive minimum measurement count threshold
+	minimum_measurement_count_threshold = {
+		world = 10,
+		continents = {
+			"NA" = {
+				default = 20,
+				countries = {
+					"US" = 50
+				}
+			},
+			"EU" = {
+				default = 25
+				countries = {}
+			}
+		}
+	}
   
   // Comprehensive enabled subdivision countries with multiple continents and countries
   enabled_subdivision_countries = {
@@ -663,6 +687,23 @@ resource "multicdn_preference_config" "comprehensive" {
       }
     }
   }
+
+  // Updated minimum measurement count threshold
+	minimum_measurement_count_threshold = {
+		world = 10,
+		continents = {
+			"NA" = {
+				default = 20,
+				countries = {
+					"US" = 55  // Changed from 50
+				}
+			},
+			"EU" = {
+				default = 25,
+					countries = {}
+			}
+		}
+	}
   
   // Updated enabled subdivision countries
   enabled_subdivision_countries = {
