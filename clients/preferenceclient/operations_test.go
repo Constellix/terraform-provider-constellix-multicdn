@@ -190,7 +190,7 @@ func TestCreatePreference(t *testing.T) {
 						},
 					},
 				},
-				MinimumMeasurementCountThreshold: MinimumMeasurementCountThreshold{
+				MinimumMeasurementCountThreshold: &MinimumMeasurementCountThreshold{
 					World: 10,
 					Continents: map[string]ContinentThreshold{
 						"NA": {
@@ -408,7 +408,7 @@ func TestUpdatePreference(t *testing.T) {
 					},
 				},
 				EnabledSubdivisionCountries: EnabledSubdivisionCountries{},
-				MinimumMeasurementCountThreshold: MinimumMeasurementCountThreshold{
+				MinimumMeasurementCountThreshold: &MinimumMeasurementCountThreshold{
 					World: 10,
 				},
 			},
