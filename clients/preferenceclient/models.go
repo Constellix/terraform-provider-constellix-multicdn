@@ -17,15 +17,15 @@ type PreferencePage struct {
 
 // Preference represents the complete CDN preference configuration
 type Preference struct {
-	ResourceID                       int64                            `json:"resourceId"`
-	ContentType                      string                           `json:"contentType,omitempty"`
-	Description                      string                           `json:"description,omitempty"`
-	Version                          string                           `json:"version,omitempty"`
-	LastUpdated                      *time.Time                       `json:"lastUpdated,omitempty"`
-	AvailabilityThresholds           AvailabilityThresholds           `json:"availabilityThresholds"`
-	PerformanceFiltering             PerformanceFiltering             `json:"performanceFiltering"`
-	EnabledSubdivisionCountries      EnabledSubdivisionCountries      `json:"enabledSubdivisionCountries"`
-	MinimumMeasurementCountThreshold MinimumMeasurementCountThreshold `json:"minimumMeasurementCountThreshold"`
+	ResourceID                       int64                             `json:"resourceId"`
+	ContentType                      string                            `json:"contentType,omitempty"`
+	Description                      string                            `json:"description,omitempty"`
+	Version                          string                            `json:"version,omitempty"`
+	LastUpdated                      *time.Time                        `json:"lastUpdated,omitempty"`
+	AvailabilityThresholds           AvailabilityThresholds            `json:"availabilityThresholds"`
+	PerformanceFiltering             PerformanceFiltering              `json:"performanceFiltering"`
+	EnabledSubdivisionCountries      EnabledSubdivisionCountries       `json:"enabledSubdivisionCountries"`
+	MinimumMeasurementCountThreshold *MinimumMeasurementCountThreshold `json:"minimumMeasurementCountThreshold"`
 }
 
 // AvailabilityThresholds represents the thresholds for availability

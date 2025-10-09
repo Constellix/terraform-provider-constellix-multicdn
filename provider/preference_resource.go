@@ -551,7 +551,10 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 	}
 
 	// Convert MinimumMeasurementCountThresholds
+	// Only send to API if user explicitly provided values (set as pointer)
 	if tfModel.MinimumMeasurementCountThreshold != nil {
+		apiModel.MinimumMeasurementCountThreshold = &preferenceclient.MinimumMeasurementCountThreshold{}
+
 		if !tfModel.MinimumMeasurementCountThreshold.World.IsNull() {
 			apiModel.MinimumMeasurementCountThreshold.World = tfModel.MinimumMeasurementCountThreshold.World.ValueInt64()
 		}
@@ -578,6 +581,8 @@ func (r *preferenceResource) convertToAPIModel(tfModel *preferenceResourceModel)
 				apiModel.MinimumMeasurementCountThreshold.Continents[continent] = apiContinent
 			}
 		}
+	} else {
+		apiModel.MinimumMeasurementCountThreshold = nil
 	}
 
 	return apiModel
@@ -640,27 +645,38 @@ func (r *preferenceResource) convertFromAPIModel(apiModel *preferenceclient.Pref
 		}
 	}
 
-	// Only initialize continents map if there are actual continents
-	if len(apiModel.MinimumMeasurementCountThreshold.Continents) > 0 {
-		tfModel.MinimumMeasurementCountThreshold.Continents = make(map[string]*continentThresholdModel)
-
-		for continent, apiContinent := range apiModel.MinimumMeasurementCountThreshold.Continents {
-			tfContinent := &continentThresholdModel{
-				Default:   types.Int64Value(apiContinent.Default),
-				Countries: nil, // Initialize as nil, not empty map
-			}
-
-			// Only initialize countries map if there are actual countries
-			if len(apiContinent.Countries) > 0 {
-				tfContinent.Countries = make(map[string]types.Int64)
-
-				for country, threshold := range apiContinent.Countries {
-					tfContinent.Countries[country] = types.Int64Value(threshold)
-				}
-			}
-
-			tfModel.MinimumMeasurementCountThreshold.Continents[continent] = tfContinent
+	// Convert MinimumMeasurementCountThreshold - this is a computed field, so always populate from server response if present
+	if apiModel.MinimumMeasurementCountThreshold != nil {
+		tfModel.MinimumMeasurementCountThreshold = &minimumMeasurementCountThresholdModel{
+			World:      types.Int64Value(apiModel.MinimumMeasurementCountThreshold.World),
+			Continents: nil, // Initialize as nil, not empty map
 		}
+
+		// Only initialize continents map if there are actual continents
+		if len(apiModel.MinimumMeasurementCountThreshold.Continents) > 0 {
+			tfModel.MinimumMeasurementCountThreshold.Continents = make(map[string]*continentThresholdModel)
+
+			for continent, apiContinent := range apiModel.MinimumMeasurementCountThreshold.Continents {
+				tfContinent := &continentThresholdModel{
+					Default:   types.Int64Value(apiContinent.Default),
+					Countries: nil, // Initialize as nil, not empty map
+				}
+
+				// Only initialize countries map if there are actual countries
+				if len(apiContinent.Countries) > 0 {
+					tfContinent.Countries = make(map[string]types.Int64)
+
+					for country, threshold := range apiContinent.Countries {
+						tfContinent.Countries[country] = types.Int64Value(threshold)
+					}
+				}
+
+				tfModel.MinimumMeasurementCountThreshold.Continents[continent] = tfContinent
+			}
+		}
+	} else {
+		// API returned nil - leave as nil
+		tfModel.MinimumMeasurementCountThreshold = nil
 	}
 
 	// Convert PerformanceFiltering

@@ -26,3 +26,9 @@ testacc:
 .PHONY: clean
 clean:
 	rm -f terraform-provider-${NAME}_v${VERSION}
+
+.PHONY: installclean
+installclean: install
+	rm -rf examples/basic/.terraform
+	rm -rf examples/basic/.terraform.lock.hcl
+
