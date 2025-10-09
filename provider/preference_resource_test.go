@@ -559,7 +559,6 @@ resource "multicdn_preference_config" "comprehensive" {
 			},
 			"EU" = {
 				default = 25
-				countries = {}
 			}
 		}
 	}
@@ -700,7 +699,6 @@ resource "multicdn_preference_config" "comprehensive" {
 			},
 			"EU" = {
 				default = 25,
-					countries = {}
 			}
 		}
 	}
