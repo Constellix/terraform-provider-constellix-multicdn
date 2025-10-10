@@ -195,54 +195,17 @@ resource "multicdn_cdn_config" "video_streaming" {
 
 ### Required
 
-- `cdn_enablement_map` (Attributes) CDN enablement configuration (see [below for nested schema](#nestedatt--cdn_enablement_map))
-- `cdns` (Attributes List) List of CDN provider entries (see [below for nested schema](#nestedatt--cdns))
 - `resource_id` (Number) Unique ID of the CDN configuration
+- `cdns` (Attributes List) List of CDN provider entries (see [below for nested schema](#nestedatt--cdns))
+- `cdn_enablement_map` (Attributes) CDN enablement configuration (see [below for nested schema](#nestedatt--cdn_enablement_map))
 - `traffic_distribution` (Attributes) Traffic distribution configuration (see [below for nested schema](#nestedatt--traffic_distribution))
 
 ### Optional
 
 - `content_type` (String) Content type of the CDN configuration (e.g., "website", "video", "images")
 - `description` (String) Description of the CDN configuration
-- `last_updated` (String) Timestamp of when the configuration was last updated
 - `version` (String) Version of the CDN configuration
-
-<a id="nestedatt--cdn_enablement_map"></a>
-### Nested Schema for `cdn_enablement_map`
-
-Optional:
-
-- `asn_overrides` (Map of List of String) ASN-specific CDN overrides
-- `continents` (Attributes Map) Continent-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents))
-- `world_default` (List of String) Default CDNs enabled globally
-
-<a id="nestedatt--cdn_enablement_map--continents"></a>
-### Nested Schema for `cdn_enablement_map.continents`
-
-Optional:
-
-- `countries` (Attributes Map) Country-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents--countries))
-- `default` (List of String) Default CDNs enabled for the continent
-
-<a id="nestedatt--cdn_enablement_map--continents--countries"></a>
-### Nested Schema for `cdn_enablement_map.continents.countries`
-
-Optional:
-
-- `asn_overrides` (Map of List of String) ASN-specific CDN overrides for the country
-- `default` (List of String) Default CDNs enabled for the country
-- `subdivisions` (Attributes Map) Subdivision-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents--countries--subdivisions))
-
-<a id="nestedatt--cdn_enablement_map--continents--countries--subdivisions"></a>
-### Nested Schema for `cdn_enablement_map.continents.countries.subdivisions`
-
-Optional:
-
-- `asn_overrides` (Map of List of String) ASN-specific CDN overrides for the subdivision
-
-
-
-
+- `last_updated` (String) Timestamp of when the configuration was last updated
 
 <a id="nestedatt--cdns"></a>
 ### Nested Schema for `cdns`
@@ -250,12 +213,52 @@ Optional:
 Required:
 
 - `cdn_name` (String) Name of the CDN provider
-- `client_cdn_id` (String) Client CDN identifier
 - `fqdn` (String) Fully qualified domain name for the CDN
+- `client_cdn_id` (String) Client CDN identifier
 
 Optional:
 
 - `description` (String) Description of the CDN provider entry
+
+
+<a id="nestedatt--cdn_enablement_map"></a>
+### Nested Schema for `cdn_enablement_map`
+
+Required:
+
+- `world_default` (List of String) Default CDNs enabled globally
+- `asn_overrides` (Map of List of String) ASN-specific CDN overrides
+- `continents` (Attributes Map) Continent-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents))
+
+<a id="nestedatt--cdn_enablement_map--continents"></a>
+### Nested Schema for `cdn_enablement_map.continents`
+
+Required:
+
+- `default` (List of String) Default CDNs enabled for the continent
+
+Optional:
+
+- `countries` (Attributes Map) Country-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents--countries))
+
+<a id="nestedatt--cdn_enablement_map--continents--countries"></a>
+### Nested Schema for `cdn_enablement_map.continents.countries`
+
+Required:
+
+- `default` (List of String) Default CDNs enabled for the country
+- `asn_overrides` (Map of List of String) ASN-specific CDN overrides for the country
+
+Optional:
+
+- `subdivisions` (Attributes Map) Subdivision-specific enablement configurations (see [below for nested schema](#nestedatt--cdn_enablement_map--continents--countries--subdivisions))
+
+<a id="nestedatt--cdn_enablement_map--continents--countries--subdivisions"></a>
+### Nested Schema for `cdn_enablement_map.continents.countries.subdivisions`
+
+Required:
+
+- `asn_overrides` (Map of List of String) ASN-specific CDN overrides for the subdivision
 
 
 <a id="nestedatt--traffic_distribution"></a>
@@ -263,17 +266,79 @@ Optional:
 
 Optional:
 
-- `continents` (Attributes Map) Continent-specific traffic distributions (see [below for nested schema](#nestedatt--traffic_distribution--continents))
 - `world_default` (Attributes) Global default traffic distribution (see [below for nested schema](#nestedatt--traffic_distribution--world_default))
+- `continents` (Attributes Map) Continent-specific traffic distributions (see [below for nested schema](#nestedatt--traffic_distribution--continents))
+
+<a id="nestedatt--traffic_distribution--world_default"></a>
+### Nested Schema for `traffic_distribution.world_default`
+
+Required:
+
+- `options` (Attributes List) List of traffic distribution options (see [below for nested schema](#nestedatt--traffic_distribution--world_default--options))
+
+<a id="nestedatt--traffic_distribution--world_default--options"></a>
+### Nested Schema for `traffic_distribution.world_default.options`
+
+Required:
+
+- `name` (String) Name of the distribution option
+- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--world_default--options--distribution))
+
+Optional:
+
+- `description` (String) Description of the traffic option
+- `equal_weight` (Boolean) Whether traffic is distributed equally
+
+<a id="nestedatt--traffic_distribution--world_default--options--distribution"></a>
+### Nested Schema for `traffic_distribution.world_default.options.distribution`
+
+Required:
+
+- `id` (String) CDN identifier
+
+Optional:
+
+- `weight` (Number) Traffic weight percentage (0-100)
 
 <a id="nestedatt--traffic_distribution--continents"></a>
 ### Nested Schema for `traffic_distribution.continents`
 
 Optional:
 
-- `countries` (Attributes Map) Country-specific traffic distributions (see [below for nested schema](#nestedatt--traffic_distribution--continents--countries))
 - `default` (Attributes) Default traffic distribution for the continent (see [below for nested schema](#nestedatt--traffic_distribution--continents--default))
+- `countries` (Attributes Map) Country-specific traffic distributions (see [below for nested schema](#nestedatt--traffic_distribution--continents--countries))
 
+<a id="nestedatt--traffic_distribution--continents--default"></a>
+### Nested Schema for `traffic_distribution.continents.default`
+
+Required:
+
+- `options` (Attributes List) List of traffic distribution options (see [below for nested schema](#nestedatt--traffic_distribution--continents--default--options))
+
+<a id="nestedatt--traffic_distribution--continents--default--options"></a>
+### Nested Schema for `traffic_distribution.continents.default.options`
+
+Required:
+
+- `name` (String) Name of the distribution option
+- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--continents--default--options--distribution))
+
+Optional:
+
+- `description` (String) Description of the traffic option
+- `equal_weight` (Boolean) Whether traffic is distributed equally
+
+<a id="nestedatt--traffic_distribution--continents--default--options--distribution"></a>
+### Nested Schema for `traffic_distribution.continents.default.options.distribution`
+
+Required:
+
+- `id` (String) CDN identifier
+
+Optional:
+
+- `weight` (Number) Traffic weight percentage (0-100)
+    
 <a id="nestedatt--traffic_distribution--continents--countries"></a>
 ### Nested Schema for `traffic_distribution.continents.countries`
 
@@ -293,8 +358,8 @@ Required:
 
 Required:
 
-- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--continents--countries--default--options--distribution))
 - `name` (String) Name of the distribution option
+- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--continents--countries--default--options--distribution))
 
 Optional:
 
@@ -303,70 +368,6 @@ Optional:
 
 <a id="nestedatt--traffic_distribution--continents--countries--default--options--distribution"></a>
 ### Nested Schema for `traffic_distribution.continents.countries.default.options.distribution`
-
-Required:
-
-- `id` (String) CDN identifier
-
-Optional:
-
-- `weight` (Number) Traffic weight percentage (0-100)
-
-
-<a id="nestedatt--traffic_distribution--continents--default"></a>
-### Nested Schema for `traffic_distribution.continents.default`
-
-Required:
-
-- `options` (Attributes List) List of traffic distribution options (see [below for nested schema](#nestedatt--traffic_distribution--continents--default--options))
-
-<a id="nestedatt--traffic_distribution--continents--default--options"></a>
-### Nested Schema for `traffic_distribution.continents.default.options`
-
-Required:
-
-- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--continents--default--options--distribution))
-- `name` (String) Name of the distribution option
-
-Optional:
-
-- `description` (String) Description of the traffic option
-- `equal_weight` (Boolean) Whether traffic is distributed equally
-
-<a id="nestedatt--traffic_distribution--continents--default--options--distribution"></a>
-### Nested Schema for `traffic_distribution.continents.default.options.distribution`
-
-Required:
-
-- `id` (String) CDN identifier
-
-Optional:
-
-- `weight` (Number) Traffic weight percentage (0-100)
-
-
-<a id="nestedatt--traffic_distribution--world_default"></a>
-### Nested Schema for `traffic_distribution.world_default`
-
-Required:
-
-- `options` (Attributes List) List of traffic distribution options (see [below for nested schema](#nestedatt--traffic_distribution--world_default--options))
-
-<a id="nestedatt--traffic_distribution--world_default--options"></a>
-### Nested Schema for `traffic_distribution.world_default.options`
-
-Required:
-
-- `distribution` (Attributes List) Traffic distribution weights (see [below for nested schema](#nestedatt--traffic_distribution--world_default--options--distribution))
-- `name` (String) Name of the distribution option
-
-Optional:
-
-- `description` (String) Description of the traffic option
-- `equal_weight` (Boolean) Whether traffic is distributed equally
-
-<a id="nestedatt--traffic_distribution--world_default--options--distribution"></a>
-### Nested Schema for `traffic_distribution.world_default.options.distribution`
 
 Required:
 
